@@ -3,30 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0d1018">
+<meta name="theme-color" content="#050713">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="PhiloLex">
+<meta name="apple-mobile-web-app-title" content="PhiloLex // NC">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>PhiloLex Neon Steam — 哲学・学術英語</title>
+<title>PhiloLex // NIGHT CITY — 哲学・学術英語</title>
 <style>
 :root{
-  --bg:#0f0a08;--panel:#201612;--panel2:#2d1d17;--ink:#fff5df;--muted:#c7b79a;
-  --line:#6d4c34;--accent:#47f4e6;--accent2:#ff59c8;--warn:#ffb35c;--bad:#ff7a59;
-  --good:#7fffb0;--gold:#ffc56c;--copper:#b87333;--brass:#d8a24f;--steam:#9ff8ff;
-  --shadow:0 18px 50px rgba(0,0,0,.42);
+  --bg:#050713;--panel:#090d1d;--panel2:#0e1429;--ink:#f6fbff;--muted:#8f9bb8;
+  --line:#223259;--cyan:#00f6ff;--magenta:#ff2bd6;--purple:#8b5cff;
+  --acid:#baff29;--orange:#ff8b32;--red:#ff315c;--good:#4dffb8;--gold:#ffd166;
+  --accent:var(--cyan);--accent2:var(--magenta);
+  --shadow:0 22px 70px rgba(0,0,0,.52);
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:
-radial-gradient(circle at 12% 0%,rgba(255,89,200,.18),transparent 28%),
-radial-gradient(circle at 88% 2%,rgba(71,244,230,.18),transparent 28%),
-radial-gradient(circle at 50% 100%,rgba(216,162,79,.10),transparent 44%),
-repeating-linear-gradient(90deg,rgba(255,255,255,.02) 0 1px,transparent 1px 26px),
-repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 26px),
-linear-gradient(180deg,#140d0a,#0f0a08 30%,#120b08 100%);
+radial-gradient(circle at 14% -5%,rgba(255,43,214,.22),transparent 30%),
+radial-gradient(circle at 88% 2%,rgba(0,246,255,.20),transparent 30%),
+radial-gradient(circle at 55% 115%,rgba(139,92,255,.15),transparent 40%),
+linear-gradient(180deg,#08051b 0%,#050713 36%,#050816 100%);
 color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 button,input,select{font:inherit}
 button{cursor:pointer}
@@ -309,33 +308,227 @@ button,select { touch-action: manipulation; }
   background:radial-gradient(circle,rgba(71,244,230,.18),transparent 52%),radial-gradient(circle,rgba(255,89,200,.16),transparent 60%);
 }
 
+
+/* ═══════════════════════════════════════════
+   CYBERPUNK NIGHT CITY THEME
+   ═══════════════════════════════════════════ */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background:
+   linear-gradient(rgba(0,246,255,.024) 1px,transparent 1px),
+   linear-gradient(90deg,rgba(255,43,214,.022) 1px,transparent 1px);
+  background-size:34px 34px;
+  transform:perspective(500px) rotateX(0deg);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:1500;pointer-events:none;opacity:.22;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px);
+  mix-blend-mode:screen;
+}
+.cyber-rain{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none;opacity:.34}
+.cyber-rain i{position:absolute;top:-18vh;width:1px;height:14vh;background:linear-gradient(transparent,var(--cyan),transparent);filter:drop-shadow(0 0 4px var(--cyan));animation:neonFall linear infinite}
+.cyber-rain i:nth-child(3n){background:linear-gradient(transparent,var(--magenta),transparent);filter:drop-shadow(0 0 4px var(--magenta))}
+@keyframes neonFall{to{transform:translateY(125vh)}}
+.app{position:relative;z-index:2}
+.brand{
+  color:#fff;text-transform:uppercase;letter-spacing:.03em;
+  text-shadow:-2px 0 10px rgba(255,43,214,.65),2px 0 10px rgba(0,246,255,.65);
+  position:relative
+}
+.brand::after{
+  content:"PHILOLEX // NIGHT CITY";position:absolute;left:2px;top:0;color:var(--magenta);
+  opacity:.18;clip-path:inset(48% 0 38% 0);animation:glitchLogo 4s infinite steps(1)
+}
+@keyframes glitchLogo{
+  0%,89%,100%{transform:none;opacity:.10}
+  90%{transform:translate(4px,-1px);opacity:.35}
+  92%{transform:translate(-4px,1px);opacity:.28}
+  94%{transform:translate(2px,0);opacity:.16}
+}
+.brand span{color:var(--cyan);text-shadow:0 0 12px rgba(0,246,255,.72);letter-spacing:.18em}
+.panel{
+  background:
+   linear-gradient(135deg,rgba(0,246,255,.045),transparent 25%),
+   linear-gradient(315deg,rgba(255,43,214,.055),transparent 26%),
+   rgba(7,12,28,.91);
+  border:1px solid rgba(0,246,255,.26);
+  box-shadow:0 0 0 1px rgba(255,43,214,.08) inset,0 0 28px rgba(0,246,255,.06),var(--shadow);
+  backdrop-filter:blur(18px);
+}
+.panel::before{
+  content:"";position:absolute;inset:7px;pointer-events:none;
+  border-top:1px solid rgba(0,246,255,.12);border-bottom:1px solid rgba(255,43,214,.10)
+}
+.dashboard{position:relative}
+.pill{
+  border:1px solid rgba(0,246,255,.38);background:rgba(3,9,24,.86);color:#c9fdff;
+  box-shadow:0 0 18px rgba(0,246,255,.08) inset,0 0 12px rgba(0,246,255,.06)
+}
+.reward-grid{grid-template-columns:repeat(4,1fr)}
+.stat{
+  background:linear-gradient(180deg,rgba(16,25,52,.92),rgba(7,12,28,.95));
+  border:1px solid rgba(139,92,255,.35);position:relative;overflow:hidden
+}
+.stat::after{
+  content:"";position:absolute;left:0;bottom:0;width:42%;height:2px;
+  background:linear-gradient(90deg,var(--cyan),transparent);box-shadow:0 0 9px var(--cyan)
+}
+.stat b{color:#fff;text-shadow:0 0 13px rgba(0,246,255,.16)}
+.xpbar,.progress{background:#0e1730;border:1px solid rgba(0,246,255,.10)}
+.xpbar>div,.progress>div{
+  background:linear-gradient(90deg,var(--magenta),var(--purple),var(--cyan));
+  box-shadow:0 0 14px rgba(0,246,255,.42)
+}
+.field select,.field input,.count-preset button,.secondary,.configure-start{
+  background:#070c1c;color:var(--ink);border:1px solid #293d6c;
+  box-shadow:0 0 0 1px rgba(0,246,255,.03) inset
+}
+.field select:focus,.field input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 16px rgba(0,246,255,.16)}
+.quick-start,.start,.primary{
+  background:linear-gradient(90deg,#ff2bd6 0%,#8b5cff 45%,#00f6ff 100%);
+  color:#fff;text-shadow:0 1px 8px #000;
+  box-shadow:0 0 20px rgba(255,43,214,.28),0 0 28px rgba(0,246,255,.18);
+  border:1px solid rgba(255,255,255,.16)
+}
+.quick-start{animation:neonPulse 1.8s ease-in-out infinite}
+@keyframes neonPulse{
+  50%{box-shadow:0 0 31px rgba(255,43,214,.46),0 0 42px rgba(0,246,255,.28);transform:translateY(-1px)}
+}
+.card .face{
+  background:
+   linear-gradient(135deg,rgba(255,43,214,.065),transparent 24%),
+   linear-gradient(315deg,rgba(0,246,255,.07),transparent 25%),
+   linear-gradient(180deg,#0b1023,#070b18);
+  border:1px solid rgba(0,246,255,.36);
+  box-shadow:0 0 0 1px rgba(255,43,214,.10) inset,0 0 34px rgba(0,246,255,.10),var(--shadow);
+  overflow:hidden
+}
+.card .face::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;
+  background:linear-gradient(90deg,transparent 0 7%,var(--cyan) 7.2%,transparent 7.5% 88%,var(--magenta) 88.2%,transparent 88.5%)
+}
+.word{
+  color:#fff;text-shadow:-2px 0 15px rgba(255,43,214,.42),2px 0 15px rgba(0,246,255,.42)
+}
+.category{
+  border:1px solid rgba(0,246,255,.5);color:#bdfcff;background:rgba(0,246,255,.05);
+  box-shadow:0 0 15px rgba(0,246,255,.08)
+}
+.meaning{color:#fff}
+.label{color:var(--cyan);text-shadow:0 0 9px rgba(0,246,255,.25)}
+.example-ja{
+  font-size:14px;line-height:1.65;color:#d8e6ff;margin-top:7px;padding:9px 11px;
+  border-left:2px solid var(--magenta);background:rgba(255,43,214,.045)
+}
+.rating button{
+  background:linear-gradient(180deg,#0d1429,#070b18);border:1px solid #30436f;
+  box-shadow:0 0 13px rgba(0,246,255,.03)
+}
+.rating button:active{transform:scale(.97);filter:brightness(1.25)}
+.rating .again{border-color:rgba(255,49,92,.7);box-shadow:0 0 14px rgba(255,49,92,.06)}
+.rating .fuzzy{border-color:rgba(255,139,50,.68)}
+.rating .good{border-color:rgba(77,255,184,.62)}
+.rating .easy{border-color:rgba(0,246,255,.65)}
+.boss{
+  background:linear-gradient(90deg,#ff315c,#ff2bd6,#8b5cff,#00f6ff);
+  color:#fff;box-shadow:0 0 24px rgba(255,43,214,.4),0 0 28px rgba(0,246,255,.25);
+  animation:bossPulse .9s ease-in-out infinite alternate
+}
+@keyframes bossPulse{to{filter:brightness(1.35);transform:translateY(-1px)}}
+.complete h2{color:#fff;text-shadow:-2px 0 15px var(--magenta),2px 0 15px var(--cyan)}
+.loot{color:var(--cyan);filter:drop-shadow(0 0 18px var(--cyan)) drop-shadow(0 0 24px var(--magenta));animation:lootSpin 2.3s linear infinite}
+@keyframes lootSpin{50%{transform:scale(1.14) rotate(12deg)}}
+.toast{background:#060b1b;border:1px solid var(--cyan);color:#fff;box-shadow:0 0 26px rgba(0,246,255,.22),var(--shadow)}
+.iphone-install{border:1px solid rgba(139,92,255,.45);background:rgba(13,16,45,.72);color:#cfd9f2}
+.ios-home{border:1px solid rgba(255,43,214,.55);background:rgba(8,9,25,.94);color:#ffdafa;box-shadow:0 0 22px rgba(255,43,214,.13)}
+.float-reward{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;text-shadow:0 0 12px currentColor,0 2px 18px #000}
+.flash{background:radial-gradient(circle,rgba(0,246,255,.26),transparent 48%),radial-gradient(circle,rgba(255,43,214,.24),transparent 62%)}
+.screen-shake{animation:screenShake .34s linear}
+@keyframes screenShake{
+  0%,100%{transform:none}20%{transform:translate(-3px,2px)}40%{transform:translate(4px,-2px)}
+  60%{transform:translate(-2px,-1px)}80%{transform:translate(2px,2px)}
+}
+.reward-banner{
+  position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);z-index:1700;pointer-events:none;
+  min-width:min(86vw,520px);padding:18px 20px;text-align:center;
+  background:linear-gradient(90deg,rgba(255,43,214,.90),rgba(92,50,220,.92),rgba(0,246,255,.90));
+  border:1px solid #fff;color:#fff;font:900 clamp(21px,7vw,38px)/1.05 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.06em;text-shadow:0 2px 8px #000;clip-path:polygon(3% 0,100% 0,97% 100%,0 100%);
+  box-shadow:0 0 35px rgba(255,43,214,.55),0 0 52px rgba(0,246,255,.35);
+  animation:bannerHit .95s cubic-bezier(.16,.84,.24,1) forwards
+}
+@keyframes bannerHit{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.55) skewX(-8deg)}
+  18%{opacity:1;transform:translate(-50%,-50%) scale(1.08) skewX(3deg)}
+  68%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-68%) scale(.95)}
+}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin:18px 2px 9px;gap:10px}
+.section-head h3{margin:0;font:800 14px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:#dffeff;letter-spacing:.1em}
+.section-head small{color:var(--muted)}
+.learning-status{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px
+}
+.learning-chip{
+  padding:11px 12px;border:1px solid #263c6a;background:rgba(8,14,32,.75);border-radius:13px
+}
+.learning-chip b{display:block;font-size:20px;color:#fff}
+.learning-chip small{color:var(--muted)}
+.sector-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.sector{
+  text-align:left;padding:11px;border-radius:13px;background:linear-gradient(180deg,rgba(14,23,49,.94),rgba(7,11,25,.96));
+  border:1px solid #29416e;color:#fff;position:relative;overflow:hidden
+}
+.sector.active{border-color:var(--cyan);box-shadow:0 0 20px rgba(0,246,255,.14)}
+.sector strong{display:block;color:#eafbff;font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+.sector small{color:#8794b2}
+.sectorbar{height:5px;margin-top:8px;border-radius:99px;background:#111b35;overflow:hidden}
+.sectorbar i{display:block;height:100%;background:linear-gradient(90deg,var(--magenta),var(--cyan));box-shadow:0 0 8px var(--cyan)}
+.section-select-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:540px){
+  .reward-grid{grid-template-columns:1fr 1fr}
+  .learning-status{grid-template-columns:1fr 1fr 1fr}
+  .sector-grid{grid-template-columns:1fr 1fr}
+  .section-select-wrap{grid-template-columns:1fr}
+}
+@media(max-width:370px){
+  .learning-status{grid-template-columns:1fr}
+  .sector-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
-<body>
+<body><div class="cyber-rain" id="cyberRain"></div>
 <div class="app">
   <div class="top">
-    <div class="brand">PhiloLex Neon Steam<span>NEON STEAM ACADEMY</span></div>
-    <div class="pill" id="deckPill">蒸気語彙エンジンを起動中…</div>
+    <div class="brand">PhiloLex // NIGHT CITY<span>CYBERPUNK ACADEMIC GRID</span></div>
+    <div class="pill" id="deckPill">Cyberdeckを起動中…</div>
   </div>
 
   <section class="panel dashboard" id="dashboard">
     <div class="reward-grid">
       <div class="stat"><b id="level">Lv.1</b><small id="title">Reader</small></div>
-      <div class="stat"><b id="xp">0 XP</b><small>総Aether XP</small></div>
-      <div class="stat"><b id="coins">0 ◈</b><small>Brass Gears</small></div>
-      <div class="stat"><b id="mastered">0</b><small>調律済み語</small></div>
+      <div class="stat"><b id="xp">0 XP</b><small>NEON XP</small></div>
+      <div class="stat"><b id="coins">0 ◈</b><small>DATA SHARDS</small></div>
+      <div class="stat"><b id="mastered">0</b><small>MASTERED</small></div>
     </div>
-    <div class="level-title"><span id="nextLevelText">次の蒸気階級まで</span><span id="xpNext"></span></div>
+    <div class="learning-status">
+      <div class="learning-chip"><b id="startedCount">0 / 1500</b><small>学習開始済み</small></div>
+      <div class="learning-chip"><b id="activeCount">0</b><small>現在学習中</small></div>
+      <div class="learning-chip"><b id="unseenCount">1500</b><small>未学習</small></div>
+    </div>
+    <div class="level-title"><span id="nextLevelText">NEXT STREET RANK</span><span id="xpNext"></span></div>
     <div class="xpbar"><div id="xpbar"></div></div>
 
     <div class="controls">
       <div class="field">
-        <label>工房モード</label>
+        <label>LEARNING ROUTE</label>
         <select id="mode">
-          <option value="auto">お任せ（弱点＋復習＋新規）</option>
-          <option value="due">復習のみ</option>
-          <option value="weak">うろ覚え・未定着のみ</option>
-          <option value="new">新規のみ</option>
+          <option value="auto">お任せ // AUTO NET</option>
+          <option value="section">セクション学習 // SECTOR RUN</option>
+          <option value="due">復習のみ // RECALL</option>
+          <option value="weak">FUZZY・未定着 // WEAK SIGNAL</option>
+          <option value="new">新規のみ // NEW DATA</option>
         </select>
       </div>
       <div class="field">
@@ -345,7 +538,7 @@ button,select { touch-action: manipulation; }
         </select>
       </div>
       <div class="field">
-        <label>蒸気スプリント</label>
+        <label>FOCUS TIMER</label>
         <select id="sprint">
           <option value="0">時間制限なし</option>
           <option value="3">3分</option>
@@ -355,31 +548,36 @@ button,select { touch-action: manipulation; }
         </select>
       </div>
       <div class="field">
-        <label>ネオン演出</label>
+        <label>VISUAL OVERDRIVE</label>
         <select id="stim">
-          <option value="off">静音</option>
-          <option value="normal" selected>標準</option>
-          <option value="max">過給</option>
+          <option value="off">OFF</option>
+          <option value="normal" selected>NEON</option>
+          <option value="max">MAXIMUM</option>
         </select>
       </div>
     </div>
-    <div class="controls" style="grid-template-columns:1fr 1fr 1fr 1fr">
-      <div class="field"><label>機関音</label><select id="sound"><option value="on" selected>ON</option><option value="off">静音</option></select></div>
-      <div class="field"><label>出題カテゴリ</label><select id="category"><option value="all">すべて</option></select></div>
+    <select id="category" style="display:none"><option value="all">すべて</option></select><div class="controls" style="grid-template-columns:1fr 1fr 1fr 1fr">
+      <div class="field"><label>SFX</label><select id="sound"><option value="on" selected>ON</option><option value="off">静音</option></select></div>
+      <div class="field"><label>SECTION</label><select id="section"><option value="all">全セクション</option></select></div>
       <div class="field"><label>新規語の比率（お任せ）</label><select id="newRatio"><option value=".1">10%</option><option value=".2" selected>20%</option><option value=".3">30%</option><option value=".4">40%</option></select></div>
       <div class="field"><label>カードを裏返す</label><select id="flipMode"><option value="tap" selected>タップ</option><option value="auto">1.3秒後自動</option></select></div>
     </div>
 
+    <div class="section-head">
+      <h3>SECTOR MAP // 150 WORDS × 10</h3>
+      <small id="sectorSummary">各セクション150語</small>
+    </div>
+    <div class="sector-grid" id="sectorGrid"></div>
     <div class="quick-row">
-      <button class="quick-start" id="quickStart" disabled>⚙ 10語を点火<span class="quick-sub">お任せ / 5分 / ネオン過給</span></button>
-      <button class="configure-start" id="startBtn" disabled>工房設定で開始</button>
+      <button class="quick-start" id="quickStart" disabled>▶ 10 WORD QUICK JACK-IN<span class="quick-sub">AUTO NET / 10 WORDS / MAX FX</span></button>
+      <button class="configure-start" id="startBtn" disabled>JACK IN</button>
     </div>
     <div class="iphone-install" id="iosInstall">
-      <b>iPhoneではホーム画面に追加すると、ネオン蒸気工房のアプリのように使えます。</b><br>
+      <b>iPhoneではホーム画面に追加すると、Night City Academic Gridのアプリのように使えます。</b><br>
       Safariの共有ボタン <b>□↑</b> → <b>「ホーム画面に追加」</b> → 「追加」。以後はPhiloLexのアイコンを1回タップするだけです。
     </div>
     <div class="deck-status" id="deckStatus">
-      初回のみオンライン語彙データを読み込み、1500語の蒸気工房デッキへ構成してこの端末へ保存します。2回目以降はキャッシュから即起動できます。
+      初回のみ1500語のCYBERDECKを構築します。10 SECTORS × 150 WORDS。以後は端末キャッシュから即起動できます。
     </div>
   </section>
 
@@ -398,25 +596,25 @@ button,select { touch-action: manipulation; }
       </div>
     </div>
     <div class="rating" id="rating">
-      <button class="again" data-rate="again">忘れた<small>すぐ再登場</small></button>
-      <button class="fuzzy" data-rate="fuzzy">うろ覚え<small>少し後で再登場</small></button>
-      <button class="good" data-rate="good">覚えた<small>間隔を伸ばす</small></button>
-      <button class="easy" data-rate="easy">余裕<small>長めに送る</small></button>
+      <button class="again" data-rate="again">LOST<small>すぐ再登場</small></button>
+      <button class="fuzzy" data-rate="fuzzy">FUZZY<small>少し後で再登場</small></button>
+      <button class="good" data-rate="good">LOCKED<small>間隔を伸ばす</small></button>
+      <button class="easy" data-rate="easy">OVERCLOCK<small>長めに送る</small></button>
     </div>
   </section>
 
   <section class="panel complete" id="complete">
     <div class="loot">✦</div>
-    <h2>BOILER STABILIZED</h2>
+    <h2>RUN COMPLETE // ACCESS GRANTED</h2>
     <div id="clearMsg" style="color:var(--muted)"></div>
     <div class="summary-grid">
       <div class="stat"><b id="sumXp">0</b><small>獲得XP</small></div>
       <div class="stat"><b id="sumCoins">0</b><small>獲得◈</small></div>
-      <div class="stat"><b id="sumRemember">0%</b><small>覚えた率</small></div>
+      <div class="stat"><b id="sumRemember">0%</b><small>LOCKED率</small></div>
     </div>
     <div class="btnrow">
-      <button class="primary" id="fiveMore">さらに5語を装填</button>
-      <button class="secondary" id="backHome">工房へ戻る</button>
+      <button class="primary" id="fiveMore">+5 DATA PACKETS</button>
+      <button class="secondary" id="backHome">RETURN TO GRID</button>
     </div>
   </section>
 </div>
@@ -426,7 +624,12 @@ const EMBEDDED = [{"word":"abduction","meaning":"アブダクション；最良�
 const NAWL_URL = "https://raw.githubusercontent.com/koba-ninkigumi/ngsl/master/NAWL-1.0_en_ja.csv";
 const NGSL_URL = "https://raw.githubusercontent.com/koba-ninkigumi/ngsl/master/NGSL-1.01_en_ja.csv";
 const TARGET = 1500;
-const DECK_KEY = "philolex_focus_deck_v2";
+const SECTION_SIZE = 150;
+const SECTION_NAMES = [
+  "01 // CORE GRID","02 // LOGIC DISTRICT","03 // CRITICAL ZONE","04 // ACADEMIC NODE A","05 // ACADEMIC NODE B",
+  "06 // THEORY SECTOR","07 // ANALYSIS SECTOR","08 // ADVANCED GRID A","09 // ADVANCED GRID B","10 // DEEP NET"
+];
+const DECK_KEY = "philolex_cyberdeck_v3";
 const STATE_KEY = "philolex_focus_state_v2";
 const META_KEY = "philolex_focus_meta_v2";
 const SETTINGS_KEY = "philolex_focus_settings_v2";
@@ -475,13 +678,42 @@ function normalizePos(p){
   if(p.includes("prep")) return "prep.";
   return p || "";
 }
-function generatedExample(word,pos){
-  const p=normalizePos(pos);
-  if(p==="n.") return `The concept of ${word} plays an important role in the author's analysis.`;
-  if(p==="adj.") return `The paper asks whether this characterization is genuinely ${word} in the relevant context.`;
-  if(p==="adv.") return `The authors ${word} distinguish the two interpretations of the claim.`;
-  if(p==="v.") return `The paper uses this expression to ${word} a relation that matters to the argument.`;
-  return `The expression “${word}” occurs in the discussion of the paper's central argument.`;
+function primaryMeaning(meaning){
+  return clean(meaning).split(/[；;]/)[0].split("、")[0].trim() || clean(meaning);
+}
+function examplePack(word,pos,meaning){
+  const p=normalizePos(pos), m=primaryMeaning(meaning);
+  if(p==="n."){
+    return {
+      en:`The paper examines the role of ${word} in the broader philosophical debate.`,
+      ja:`この論文は、より広い哲学的論争における「${m}」の役割を検討する。`
+    };
+  }
+  if(p==="adj."){
+    return {
+      en:`The author describes the case as ${word} in the relevant context.`,
+      ja:`著者は、当該の文脈においてこの事例を「${m}」と記述する。`
+    };
+  }
+  if(p==="adv."){
+    return {
+      en:`The paper uses “${word}” to qualify how the central claim should be understood.`,
+      ja:`この論文では、中心的主張をどのように理解すべきかを限定するために「${word}（${m}）」が用いられている。`
+    };
+  }
+  if(p==="v."){
+    return {
+      en:`The paper uses the verb “${word}” when developing its central argument.`,
+      ja:`この論文は、中心的な論証を展開する際に「${word}（${m}）」という動詞を用いている。`
+    };
+  }
+  return {
+    en:`The expression “${word}” plays an important role in the paper's central argument.`,
+    ja:`「${word}（${m}）」という表現は、この論文の中心的な論証で重要な役割を果たしている。`
+  };
+}
+function generatedExample(word,pos,meaning){
+  return examplePack(word,pos,meaning).en;
 }
 function categoryForNawl(word,def,pos){
   const s=(word+" "+def).toLowerCase();
@@ -511,7 +743,13 @@ async function buildDeck(){
   if(cache){
     try{
       const parsed=JSON.parse(cache);
-      if(Array.isArray(parsed)&&parsed.length===TARGET){ deck=parsed; return {cached:true}; }
+      if(Array.isArray(parsed)&&parsed.length===TARGET){
+        deck=parsed.map((c,i)=>{
+          const pack=examplePack(c.word,c.pos,c.meaning);
+          return {...c,section:c.section||Math.floor(i/SECTION_SIZE)+1,example:pack.en,exampleJa:c.exampleJa||pack.ja};
+        });
+        return {cached:true};
+      }
     }catch(e){}
   }
   $("deckStatus").textContent="初回語彙データを構築中：学術語彙 → 哲学専門語彙 → 一般上級語彙の順に統合しています…";
@@ -535,7 +773,7 @@ async function buildDeck(){
     put({
       word,meaning,pos:normalizePos(pos),definition:def,
       category:categoryForNawl(word,def,pos),priority:4,
-      example:generatedExample(word,pos),note:"",source:"NAWL"
+      example:generatedExample(word,pos,meaning),note:"",source:"NAWL"
     });
   }
 
@@ -548,7 +786,7 @@ async function buildDeck(){
     const score=academicUtility(word,pos,rank);
     if(score<3)continue;
     candidates.push({rank,score,word,meaning,pos:normalizePos(pos),definition:def,
-      category:"General advanced reading",priority:3,example:generatedExample(word,pos),note:"",source:"NGSL"});
+      category:"General advanced reading",priority:3,example:generatedExample(word,pos,meaning),note:"",source:"NGSL"});
   }
   candidates.sort((a,b)=>b.score-a.score || a.rank-b.rank);
   for(const c of candidates){ if(map.size>=TARGET)break; put(c); }
@@ -560,10 +798,13 @@ async function buildDeck(){
       const rank=+r[0],word=clean(r[1]),pos=clean(r[2]),def=clean(r[3]),meaning=clean(r.slice(4).join(","));
       if(!word||!meaning||rank<900||rank>2600||map.has(word.toLowerCase()))continue;
       put({word,meaning,pos:normalizePos(pos),definition:def,category:"General advanced reading",priority:2,
-        example:generatedExample(word,pos),note:"",source:"NGSL",rank});
+        example:generatedExample(word,pos,meaning),note:"",source:"NGSL",rank});
     }
   }
-  deck=[...map.values()].slice(0,TARGET).map((c,i)=>({...c,id:i+1}));
+  deck=[...map.values()].slice(0,TARGET).map((c,i)=>{
+    const pack=examplePack(c.word,c.pos,c.meaning);
+    return {...c,id:i+1,section:Math.floor(i/SECTION_SIZE)+1,example:pack.en,exampleJa:pack.ja};
+  });
   localStorage.setItem(DECK_KEY,JSON.stringify(deck));
   return {cached:false};
 }
@@ -574,7 +815,7 @@ function sFor(c){
 function saveState(){localStorage.setItem(STATE_KEY,JSON.stringify(state));localStorage.setItem(META_KEY,JSON.stringify(meta))}
 function saveSettings(){
   const obj={};
-  ["mode","sessionSize","sprint","stim","sound","category","newRatio","flipMode"].forEach(id=>obj[id]=$(id).value);
+  ["mode","sessionSize","sprint","stim","sound","category","section","newRatio","flipMode"].forEach(id=>obj[id]=$(id).value);
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(obj));
 }
 function loadSettings(){
@@ -583,22 +824,60 @@ function loadSettings(){
 function levelInfo(xp){
   const level=Math.floor(Math.sqrt(xp/90))+1;
   const prev=90*(level-1)*(level-1), next=90*level*level;
-  const titles=["Boiler Hand","Copper Reader","Valve Tuner","Signal Analyst","Gear Dialectician","Aether Surveyor","Clockwork Metaphysician","Neon Critic","Steam Philosopher","Grand Artificer"];
+  const titles=["Street Reader","Data Runner","Signal Cracker","Logic Netrunner","Argument Hacker","Epistemic Operator","Theory Architect","Critical Ghost","Night Philosopher","Legendary Netrunner"];
   return {level,prev,next,title:titles[Math.min(titles.length-1,Math.floor((level-1)/2))]};
 }
 function renderDashboard(){
-  const li=levelInfo(meta.xp||0), mastered=deck.filter(c=>sFor(c).mastery>=80).length;
+  const li=levelInfo(meta.xp||0);
+  const mastered=deck.filter(c=>sFor(c).mastery>=80).length;
+  const started=deck.filter(c=>sFor(c).seen>0).length;
+  const active=deck.filter(c=>{const s=sFor(c);return s.seen>0&&s.mastery<80}).length;
+  const unseen=deck.length-started;
   $("level").textContent="Lv."+li.level;$("title").textContent=li.title;
-  $("xp").textContent=(meta.xp||0).toLocaleString()+" AXP";$("coins").textContent=(meta.coins||0).toLocaleString()+" ⚙";
-  $("mastered").textContent=mastered;
+  $("xp").textContent=(meta.xp||0).toLocaleString()+" NXP";
+  $("coins").textContent=(meta.coins||0).toLocaleString()+" ◆";
+  $("mastered").textContent=mastered+" / "+deck.length;
+  $("startedCount").textContent=started+" / "+deck.length;
+  $("activeCount").textContent=active;
+  $("unseenCount").textContent=unseen;
   $("xpbar").style.width=Math.max(0,Math.min(100,(meta.xp-li.prev)/(li.next-li.prev)*100))+"%";
-  $("xpNext").textContent=(li.next-meta.xp)+" XP";
+  $("xpNext").textContent=(li.next-meta.xp)+" NXP";
+  renderSectorGrid();
+}
+function renderSectorGrid(){
+  if(!$("sectorGrid"))return;
+  const selected=$("section")?.value||"all";
+  $("sectorGrid").innerHTML=SECTION_NAMES.map((name,i)=>{
+    const n=i+1, arr=deck.filter(c=>c.section===n);
+    const started=arr.filter(c=>sFor(c).seen>0).length;
+    const mastered=arr.filter(c=>sFor(c).mastery>=80).length;
+    const pct=arr.length?Math.round(started/arr.length*100):0;
+    return `<button class="sector ${selected==String(n)?"active":""}" data-sector="${n}">
+      <strong>${name}</strong><small>${started}/150 started · ${mastered}/150 mastered</small>
+      <div class="sectorbar"><i style="width:${pct}%"></i></div>
+    </button>`;
+  }).join("");
+  document.querySelectorAll("[data-sector]").forEach(b=>b.onclick=()=>{
+    $("section").value=b.dataset.sector;
+    $("mode").value="section";
+    saveSettings();renderSectorGrid();
+    toast(SECTION_NAMES[+b.dataset.sector-1]+" SELECTED");
+  });
 }
 function populateCategories(){
-  const sel=$("category"), current=sel.value;
-  const cats=["all",...new Set(deck.map(c=>c.category).filter(Boolean))].sort((a,b)=>a==="all"?-1:a.localeCompare(b));
-  sel.innerHTML=cats.map(c=>`<option value="${esc(c)}">${c==="all"?"すべて":esc(c)}</option>`).join("");
-  if(cats.includes(current))sel.value=current;
+  const catSel=$("category");
+  if(catSel){
+    const cats=["all",...new Set(deck.map(c=>c.category).filter(Boolean))];
+    catSel.innerHTML=cats.map(c=>`<option value="${esc(c)}">${c==="all"?"すべて":esc(c)}</option>`).join("");
+    catSel.value="all";
+  }
+  const sec=$("section");
+  if(sec){
+    const current=sec.value||"all";
+    sec.innerHTML='<option value="all">全セクション</option>'+SECTION_NAMES.map((n,i)=>`<option value="${i+1}">${n} · ${i*150+1}–${(i+1)*150}</option>`).join("");
+    if(["all",...SECTION_NAMES.map((_,i)=>String(i+1))].includes(current))sec.value=current;
+  }
+  renderSectorGrid();
 }
 function weakness(c){
   const s=sFor(c), t=now();
@@ -609,18 +888,32 @@ function weakness(c){
   if(s.lastAt)score+=Math.min(15,(t-s.lastAt)/DAY*2);
   return score;
 }
-function eligibleDeck(){
-  const cat=$("category").value;
-  return cat==="all"?deck:deck.filter(c=>c.category===cat);
+function eligibleDeck(mode=null){
+  let pool=deck;
+  const cat=$("category")?.value||"all";
+  if(cat!=="all")pool=pool.filter(c=>c.category===cat);
+  const actualMode=mode||$("mode").value;
+  if(actualMode==="section"){
+    let sec=$("section").value;
+    if(sec==="all"){sec="1";$("section").value="1";}
+    pool=pool.filter(c=>c.section===+sec);
+  }
+  return pool;
 }
 function chooseSession(n,modeOverride=null){
-  const mode=modeOverride||$("mode").value,t=now(),pool=eligibleDeck();
+  const mode=modeOverride||$("mode").value,t=now(),pool=eligibleDeck(mode);
   const due=pool.filter(c=>{const s=sFor(c);return s.seen>0 && s.due<=t}).sort((a,b)=>weakness(b)-weakness(a));
   const weak=pool.filter(c=>{const s=sFor(c);return s.seen>0 && (s.mastery<65||s.last==="fuzzy"||s.last==="again")}).sort((a,b)=>weakness(b)-weakness(a));
   const fresh=pool.filter(c=>sFor(c).seen===0).sort((a,b)=>(b.priority||3)-(a.priority||3)||a.id-b.id);
   let chosen=[];
   const add=c=>{if(c && !chosen.some(x=>x.id===c.id))chosen.push(c)};
-  if(mode==="due"){due.slice(0,n).forEach(add)}
+  if(mode==="section"){
+    const review=[...new Map([...due,...weak].map(c=>[c.id,c])).values()].sort((a,b)=>weakness(b)-weakness(a));
+    review.forEach(c=>{if(chosen.length<Math.ceil(n*.6))add(c)});
+    fresh.forEach(c=>{if(chosen.length<n)add(c)});
+    pool.sort((a,b)=>a.id-b.id).forEach(c=>{if(chosen.length<n)add(c)});
+  }
+  else if(mode==="due"){due.slice(0,n).forEach(add)}
   else if(mode==="weak"){weak.slice(0,n).forEach(add)}
   else if(mode==="new"){fresh.slice(0,n).forEach(add)}
   else{
@@ -644,8 +937,9 @@ function startSession(sizeOverride=null,modeOverride=null){
   saveSettings();
   const n=+(sizeOverride||$("sessionSize").value||10);
   const q=chooseSession(n,modeOverride);
-  if(!q.length){toast("この条件では蒸気工房から出題できるカードがありません");return}
-  session={queue:q,initial:q.length,index:0,answered:0,good:0,xp:0,coins:0,combo:0,fever:0,start:now(),seconds:+$("sprint").value*60,bossEvery:10};
+  if(!q.length){toast("NO DATA // この条件では出題できるカードがありません");return}
+  session={queue:q,initial:q.length,index:0,answered:0,good:0,xp:0,coins:0,combo:0,fever:0,start:now(),seconds:+$("sprint").value*60,bossEvery:10,
+    route:$("mode").value==="section"?SECTION_NAMES[(+$("section").value||1)-1]:"AUTO NET"};
   $("dashboard").style.display="none";$("complete").style.display="none";$("study").style.display="block";
   document.body.classList.toggle("max-stim",$("stim").value==="max");
   nextCard();
@@ -658,7 +952,7 @@ function runTimer(){
   const tick=()=>{
     const left=Math.max(0,Math.ceil((deadline-now())/1000));
     $("timer").textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
-    if(left<=0){clearInterval(timerHandle);toast("蒸気スプリント終了。今のカードで区切れます");}
+    if(left<=0){clearInterval(timerHandle);toast("FOCUS TIMER終了。今のカードで区切れます");}
   };tick();timerHandle=setInterval(tick,500);
 }
 function nextCard(){
@@ -670,15 +964,15 @@ function nextCard(){
 function renderCard(){
   const s=sFor(current), isBoss=((session.answered+1)%session.bossEvery===0)||weakness(current)>100;
   $("card").classList.remove("flip");
-  $("front").innerHTML=`${isBoss?'<div class="boss">PRIME GEAR ×3</div>':""}<span class="category">${esc(current.category)}</span><div class="word">${esc(current.word)}</div><div class="pos">${esc(current.pos)}</div><div class="reveal-hint">タップ / Space で裏返す</div>`;
-  $("back").innerHTML=`${isBoss?'<div class="boss">PRIME GEAR ×3</div>':""}<span class="category">${esc(current.category)}</span><div class="word" style="font-size:31px">${esc(current.word)}</div><div class="meaning">${esc(current.meaning)}</div>${current.definition?`<div class="label">English definition</div><div class="definition">${esc(current.definition)}</div>`:""}<div class="label">Example</div><div class="example">${esc(current.example)}</div>${current.note?`<div class="label">Reading note</div><div class="note">${esc(current.note)}</div>`:""}<div class="reveal-hint">定着度 ${Math.round(s.mastery)} / 100 ・ 失念 ${s.lapses}回</div>`;
+  $("front").innerHTML=`${isBoss?'<div class="boss">BLACK ICE ×3</div>':""}<span class="category">${SECTION_NAMES[(current.section||1)-1]} · ${esc(current.category)}</span><div class="word">${esc(current.word)}</div><div class="pos">${esc(current.pos)}</div><div class="reveal-hint">タップ / Space で裏返す</div>`;
+  $("back").innerHTML=`${isBoss?'<div class="boss">BLACK ICE ×3</div>':""}<span class="category">${SECTION_NAMES[(current.section||1)-1]} · ${esc(current.category)}</span><div class="word" style="font-size:31px">${esc(current.word)}</div><div class="meaning">${esc(current.meaning)}</div>${current.definition?`<div class="label">ENGLISH DEFINITION</div><div class="definition">${esc(current.definition)}</div>`:""}<div class="label">ACADEMIC EXAMPLE</div><div class="example">${esc(current.example)}</div><div class="label">日本語訳</div><div class="example-ja">${esc(current.exampleJa||examplePack(current.word,current.pos,current.meaning).ja)}</div>${current.note?`<div class="label">READING NOTE</div><div class="note">${esc(current.note)}</div>`:""}<div class="reveal-hint">MASTERY ${Math.round(s.mastery)} / 100 ・ LAPSES ${s.lapses}</div>`;
   $("counter").textContent=(session.answered+1)+" / "+session.initial;
   $("sessionProgress").style.width=Math.min(100,session.answered/session.initial*100)+"%";
-  $("combo").textContent="CHAIN "+session.combo;
-  $("fever").textContent=session.fever>0?"OVERDRIVE ×2":"";
+  $("combo").textContent="LINK "+session.combo;
+  $("fever").textContent=session.fever>0?"NEURAL OVERDRIVE ×2":"";
   $("fever").className=session.fever>0?"fever":"";
-  $("sessionXp").textContent="+"+session.xp+" XP";
-  $("weakLabel").textContent=s.last==="again"?"COLD":s.last==="fuzzy"?"STEAM":s.seen===0?"FRESH":"AUTO";
+  $("sessionXp").textContent="+"+session.xp+" NXP";
+  $("weakLabel").textContent=s.last==="again"?"LOST":s.last==="fuzzy"?"FUZZY":s.seen===0?"NEW":(session.route||"AUTO");
 }
 function rate(kind){
   if(!current||!session)return;
@@ -689,7 +983,10 @@ function rate(kind){
   if(kind==="fuzzy"){base=8;coin=1;session.combo=Math.max(0,session.combo-1);s.streak=0;masteryDelta=5;stabilityMult=.9;days=.25;reinsert=5;}
   if(kind==="good"){base=15;coin=2;session.combo++;s.streak++;masteryDelta=13;stabilityMult=1.65;days=Math.max(1,s.stability*1.8);}
   if(kind==="easy"){base=24;coin=3;session.combo++;s.streak++;masteryDelta=20;stabilityMult=2.35;days=Math.max(3,s.stability*3.2);}
-  if(session.combo>=5 && session.fever<=0)session.fever=3;
+  if(session.combo>=5 && session.fever<=0){
+    session.fever=3;
+    setTimeout(()=>{megaBanner("NEURAL OVERDRIVE // ×2");confetti(58);soundFX("level")},120);
+  }
   const feverMult=session.fever>0?2:1, bossMult=boss?3:1, comboMult=1+Math.min(1.5,session.combo*.08);
   const gained=Math.round(base*feverMult*bossMult*comboMult);
   const ccoin=Math.round(coin*feverMult*bossMult);
@@ -709,34 +1006,43 @@ function rate(kind){
   }
   // Variable reward: small, non-punitive insight drop.
   if((kind==="good"||kind==="easy") && Math.random()<.14){
-    const drop=[5,8,12,20,35][Math.floor(Math.random()*5)];
+    const drop=[5,8,12,20,35,50][Math.floor(Math.random()*6)];
     meta.coins+=drop;session.coins+=drop;
-    rewardFX("AETHER CACHE +"+drop+"⚙",true);
-  }else rewardFX("+"+gained+" AXP"+(ccoin?`  +${ccoin}⚙`:""),kind==="easy"||boss);
+    rewardFX("DATA DROP +"+drop+"◆",true);
+  }else rewardFX("+"+gained+" NXP"+(ccoin?`  +${ccoin}◆`:""),kind==="easy"||boss);
   if(session.answered%5===0){
     const chest=5+Math.floor(Math.random()*16);
     meta.coins+=chest;session.coins+=chest;
-    setTimeout(()=>rewardFX("GEAR CRATE +"+chest+"⚙",true),260);
+    setTimeout(()=>rewardFX("CACHE CRATE +"+chest+"◆",true),260);
   }
   saveState();
   const newLevel=levelInfo(meta.xp).level;
-  if(newLevel>oldLevel)setTimeout(()=>{rewardFX("STEAM RANK UP! Lv."+newLevel,true);soundFX("level");confetti(42)},430);
+  if(newLevel>oldLevel)setTimeout(()=>{rewardFX("STREET RANK UP // Lv."+newLevel,true);soundFX("level");confetti(42)},430);
   session.index++;
   setTimeout(()=>nextCard(),$("stim").value==="off"?40:210);
+}
+function megaBanner(text){
+  const b=document.createElement("div");b.className="reward-banner";b.textContent=text;
+  document.body.appendChild(b);
+  document.body.classList.add("screen-shake");
+  setTimeout(()=>document.body.classList.remove("screen-shake"),380);
+  setTimeout(()=>b.remove(),1050);
 }
 function rewardFX(text,big=false){
   if($("stim").value==="off")return;
   const el=document.createElement("div");el.className="float-reward";el.textContent=text;
-  el.style.left="50%";el.style.top=big?"45%":"58%";el.style.color=big?"#ffd166":"#77f0c9";
+  el.style.left="50%";el.style.top=big?"45%":"58%";el.style.color=big?"#00f6ff":"#ff77e5";
   document.body.appendChild(el);setTimeout(()=>el.remove(),1000);
-  if(big||$("stim").value==="max"){const f=document.createElement("div");f.className="flash";document.body.appendChild(f);setTimeout(()=>f.remove(),500)}
-  if(big)confetti($("stim").value==="max"?45:22);
+  if(big||$("stim").value==="max"){
+    const f=document.createElement("div");f.className="flash";document.body.appendChild(f);setTimeout(()=>f.remove(),520);
+  }
+  if(big){megaBanner(text);confetti($("stim").value==="max"?72:38)}
   soundFX(big?"big":"ok");
-  if(navigator.vibrate && $("stim").value==="max")navigator.vibrate(big?[18,35,18]:12);
+  if(navigator.vibrate && $("stim").value==="max")navigator.vibrate(big?[24,30,24,30,45]:[12,16,12]);
 }
 function confetti(n=24){
   if($("stim").value==="off")return;
-  const colors=["#8b7cff","#35d0ba","#ffd166","#ff6685","#f4f6fb"];
+  const colors=["#00f6ff","#ff2bd6","#8b5cff","#baff29","#ffffff","#ff315c"];
   for(let i=0;i<n;i++){
     const p=document.createElement("i");p.className="particle";
     p.style.left=(45+Math.random()*10)+"vw";p.style.top=(40+Math.random()*8)+"vh";
@@ -765,8 +1071,8 @@ function finishSession(){
   $("study").style.display="none";$("complete").style.display="block";
   meta.sessions=(meta.sessions||0)+1;saveState();
   const rate=session.answered?Math.round(session.good/session.answered*100):0;
-  $("sumXp").textContent="+"+session.xp;$("sumCoins").textContent="+"+session.coins+"⚙";$("sumRemember").textContent=rate+"%";
-  $("clearMsg").textContent=session.combo>=5?"高圧セッション完了。弱点カードは次回の自動整備ルートに戻ります。":"整備完了。忘れた語・うろ覚え語は次回の自動整備で優先回収します。";
+  $("sumXp").textContent="+"+session.xp;$("sumCoins").textContent="+"+session.coins+"◆";$("sumRemember").textContent=rate+"%";
+  $("clearMsg").textContent=session.combo>=5?"RUN COMPLETE // 弱点データは次回のAUTO NETへ自動的に再投入されます。":"整備完了。LOST語・FUZZY語は次回の自動整備で優先回収します。";
   confetti($("stim").value==="max"?85:45);soundFX("level");
   renderDashboard();
 }
@@ -778,7 +1084,7 @@ document.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>rate(b.dataset
 $("startBtn").onclick=()=>startSession();
 $("fiveMore").onclick=()=>{ $("complete").style.display="none"; startSession(5,"auto") };
 $("backHome").onclick=()=>{$("complete").style.display="none";$("dashboard").style.display="block";renderDashboard()};
-["mode","sessionSize","sprint","stim","sound","category","newRatio","flipMode"].forEach(id=>$(id).onchange=()=>{saveSettings();document.body.classList.toggle("max-stim",$("stim").value==="max")});
+["mode","sessionSize","sprint","stim","sound","category","section","newRatio","flipMode"].forEach(id=>$(id).onchange=()=>{saveSettings();document.body.classList.toggle("max-stim",$("stim").value==="max");renderSectorGrid()});
 document.addEventListener("keydown",e=>{
   if($("study").style.display!=="block")return;
   if(e.code==="Space"){e.preventDefault();flipped=!flipped;$("card").classList.toggle("flip",flipped)}
@@ -786,9 +1092,22 @@ document.addEventListener("keydown",e=>{
 });
 
 
+
+(function cyberRain(){
+  const root=$("cyberRain"); if(!root)return;
+  for(let i=0;i<30;i++){
+    const x=document.createElement("i");
+    x.style.left=(Math.random()*100)+"vw";
+    x.style.animationDuration=(1.6+Math.random()*3.2)+"s";
+    x.style.animationDelay=(-Math.random()*4)+"s";
+    x.style.opacity=(.18+Math.random()*.55);
+    root.appendChild(x);
+  }
+})();
+
 // iPhone/PWA helpers
 $("quickStart").onclick=()=>{
-  $("mode").value="auto";
+  $("mode").value="auto";$("section").value="all";
   $("sessionSize").value="10";
   $("sprint").value="5";
   $("stim").value="max";
@@ -798,7 +1117,7 @@ $("quickStart").onclick=()=>{
   startSession(10,"auto");
 };
 $("iosHome").onclick=()=>{
-  if(confirm("このセッションを終了して工房へ戻る戻りますか？")){
+  if(confirm("このセッションを終了してRETURN TO GRID戻りますか？")){
     clearInterval(timerHandle);
     session=null; current=null;
     $("study").style.display="none";
@@ -821,15 +1140,15 @@ $("iosHome").onclick=()=>{
   loadSettings();
   try{
     const res=await buildDeck();
-    $("deckPill").textContent=deck.length+"語";
-    $("startBtn").disabled=false;$("startBtn").textContent="工房設定で開始";$("quickStart").disabled=false;
-    $("deckStatus").textContent=(res.cached?"1500語を端末キャッシュから読み込みました。":"1500語の初期デッキを構築し、端末に保存しました。")+" 「お任せ」は冷えた語・蒸気の甘い語・期限超過語を優先し、必要量だけ新規語を混ぜます。";
+    $("deckPill").textContent="CYBERDECK // "+deck.length+" WORDS";
+    $("startBtn").disabled=false;$("startBtn").textContent="JACK IN";$("quickStart").disabled=false;
+    $("deckStatus").textContent=(res.cached?"1500語を端末キャッシュから読み込みました。":"1500語の初期デッキを構築し、端末に保存しました。")+" 「お任せ」はLOST・FUZZY・期限超過語を優先し、必要量だけNEW DATAを混ぜます。";
     populateCategories();renderDashboard();
   }catch(err){
     // Offline fallback: the curated embedded philosophy deck still works.
     deck=EMBEDDED.map((c,i)=>({...c,id:i+1}));
     $("deckPill").textContent=deck.length+"語（オフライン）";
-    $("startBtn").disabled=false;$("startBtn").textContent="工房設定で開始";$("quickStart").disabled=false;
+    $("startBtn").disabled=false;$("startBtn").textContent="JACK IN";$("quickStart").disabled=false;
     $("deckStatus").textContent="初回オンライン語彙データの取得に失敗しました。現在は内蔵の哲学語彙で利用できます。ネット接続時にページを再読み込みすると1500語を構築します。";
     populateCategories();renderDashboard();
   }

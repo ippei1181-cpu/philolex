@@ -1,13 +1,13 @@
 {
-  "name": "PhiloLex Neon Steam",
-  "short_name": "PhiloLex",
-  "description": "ネオン溢れるスチームパンク工房で哲学・学術英語を学ぶ単語カード",
+  "name": "PhiloLex // Night City",
+  "short_name": "PhiloLex NC",
+  "description": "Cyberpunk-style philosophy & academic English vocabulary trainer",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0d1018",
-  "theme_color": "#0d1018",
+  "background_color": "#050713",
+  "theme_color": "#050713",
   "icons": [
     {
       "src": "icon-192.png",
