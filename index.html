@@ -596,10 +596,10 @@ body::after{
       </div>
     </div>
     <div class="rating" id="rating">
-      <button class="again" data-rate="again">LOST<small>すぐ再登場</small></button>
-      <button class="fuzzy" data-rate="fuzzy">FUZZY<small>少し後で再登場</small></button>
-      <button class="good" data-rate="good">LOCKED<small>間隔を伸ばす</small></button>
-      <button class="easy" data-rate="easy">OVERCLOCK<small>長めに送る</small></button>
+      <button class="again" data-rate="again">覚えていない<small>すぐ再登場</small></button>
+      <button class="fuzzy" data-rate="fuzzy">うろ覚え<small>少し後で再登場</small></button>
+      <button class="good" data-rate="good">覚えた<small>間隔を伸ばす</small></button>
+      <button class="easy" data-rate="easy">しっかり覚えた<small>長めに送る</small></button>
     </div>
   </section>
 
@@ -972,7 +972,7 @@ function renderCard(){
   $("fever").textContent=session.fever>0?"NEURAL OVERDRIVE ×2":"";
   $("fever").className=session.fever>0?"fever":"";
   $("sessionXp").textContent="+"+session.xp+" NXP";
-  $("weakLabel").textContent=s.last==="again"?"LOST":s.last==="fuzzy"?"FUZZY":s.seen===0?"NEW":(session.route||"AUTO");
+  $("weakLabel").textContent=s.last==="again"?"覚えていない":s.last==="fuzzy"?"うろ覚え":s.seen===0?"新規":(session.route||"AUTO");
 }
 function rate(kind){
   if(!current||!session)return;
@@ -1142,7 +1142,7 @@ $("iosHome").onclick=()=>{
     const res=await buildDeck();
     $("deckPill").textContent="CYBERDECK // "+deck.length+" WORDS";
     $("startBtn").disabled=false;$("startBtn").textContent="JACK IN";$("quickStart").disabled=false;
-    $("deckStatus").textContent=(res.cached?"1500語を端末キャッシュから読み込みました。":"1500語の初期デッキを構築し、端末に保存しました。")+" 「お任せ」はLOST・FUZZY・期限超過語を優先し、必要量だけNEW DATAを混ぜます。";
+    $("deckStatus").textContent=(res.cached?"1500語を端末キャッシュから読み込みました。":"1500語の初期デッキを構築し、端末に保存しました。")+" 「お任せ」は「覚えていない」「うろ覚え」・期限超過語を優先し、必要量だけ新規語を混ぜます。";
     populateCategories();renderDashboard();
   }catch(err){
     // Offline fallback: the curated embedded philosophy deck still works.
