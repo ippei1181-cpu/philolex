@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d1018">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PhiloLex">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>PhiloLex Neon Steam — 哲学・学術英語</title>
+<style>
+:root{
+  --bg:#0f0a08;--panel:#201612;--panel2:#2d1d17;--ink:#fff5df;--muted:#c7b79a;
+  --line:#6d4c34;--accent:#47f4e6;--accent2:#ff59c8;--warn:#ffb35c;--bad:#ff7a59;
+  --good:#7fffb0;--gold:#ffc56c;--copper:#b87333;--brass:#d8a24f;--steam:#9ff8ff;
+  --shadow:0 18px 50px rgba(0,0,0,.42);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:
+radial-gradient(circle at 12% 0%,rgba(255,89,200,.18),transparent 28%),
+radial-gradient(circle at 88% 2%,rgba(71,244,230,.18),transparent 28%),
+radial-gradient(circle at 50% 100%,rgba(216,162,79,.10),transparent 44%),
+repeating-linear-gradient(90deg,rgba(255,255,255,.02) 0 1px,transparent 1px 26px),
+repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 26px),
+linear-gradient(180deg,#140d0a,#0f0a08 30%,#120b08 100%);
+color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:980px;margin:auto;padding:18px 15px 60px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font:700 28px/1.05 Georgia,serif;letter-spacing:.2px}
+.brand span{font:700 12px/1 sans-serif;color:var(--accent2);display:block;margin-top:5px;letter-spacing:.14em}
+.pill{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:999px;padding:7px 10px;font-size:12px;color:var(--muted)}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018));border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.dashboard{padding:18px;margin-top:16px}
+.reward-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.stat{background:var(--panel2);border:1px solid var(--line);padding:12px;border-radius:14px}
+.stat b{display:block;font-size:23px}.stat small{color:var(--muted)}
+.xpbar,.progress{height:9px;border-radius:99px;background:#252d40;overflow:hidden}
+.xpbar>div,.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+.level-title{display:flex;justify-content:space-between;margin:10px 0 6px;font-size:12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:9px;margin-top:16px}
+.field label{display:block;font-size:11px;color:var(--muted);margin:0 0 5px 2px}
+.field select,.field input{width:100%;background:#0f1420;color:var(--ink);border:1px solid var(--line);padding:11px;border-radius:11px}
+.count-preset{display:flex;gap:5px;flex-wrap:wrap}
+.count-preset button{border:1px solid var(--line);background:#0f1420;color:var(--muted);padding:8px 10px;border-radius:9px}
+.count-preset button.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:700}
+.start{width:100%;margin-top:15px;border:0;border-radius:14px;padding:15px 18px;background:linear-gradient(90deg,#7868ff,#31c8bd);color:white;font-weight:800;font-size:17px;box-shadow:0 8px 24px rgba(102,88,255,.28)}
+.start:disabled{opacity:.45;cursor:not-allowed}
+.deck-status{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.55}
+.study{display:none;margin-top:14px}
+.hud{display:grid;grid-template-columns:1fr auto auto;gap:9px;align-items:center;margin-bottom:9px}
+.combo{font-weight:800}.fever{color:var(--gold);text-shadow:0 0 12px rgba(255,209,102,.5)}
+.timer{font-variant-numeric:tabular-nums}
+.card-wrap{perspective:1300px}
+.card{position:relative;min-height:445px;transform-style:preserve-3d;transition:transform .36s}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;padding:28px;background:
+linear-gradient(155deg,rgba(255,255,255,.065),rgba(255,255,255,.015)),var(--panel);
+border:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column}
+.front{align-items:center;justify-content:center;text-align:center}
+.back{transform:rotateY(180deg)}
+.word{font:700 48px/1.12 Georgia,serif;word-break:break-word}
+.pos{margin-top:10px;color:var(--muted)}
+.category{display:inline-flex;align-self:flex-start;border:1px solid #3a4661;border-radius:999px;padding:6px 9px;font-size:11px;color:#c5cede}
+.front .category{align-self:center;margin-bottom:18px}
+.reveal-hint{margin-top:auto;color:#7f8aa1;font-size:12px}
+.meaning{font-size:23px;font-weight:800;line-height:1.45;margin:15px 0}
+.label{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#8390a8;margin-top:12px}
+.definition,.example,.note{line-height:1.65;margin-top:5px}
+.example{font:18px/1.58 Georgia,serif}
+.note{font-size:13px;color:#aeb7c8}
+.boss{position:absolute;left:18px;top:17px;z-index:4;background:linear-gradient(90deg,#ff667e,#ff9a53);padding:6px 9px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.08em;box-shadow:0 0 22px rgba(255,102,126,.35)}
+.rating{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.rating button{border:1px solid var(--line);color:var(--ink);background:#151b28;border-radius:12px;padding:12px 7px;font-weight:700}
+.rating button small{display:block;font-weight:400;color:var(--muted);margin-top:2px}
+.rating .again{border-color:#613245}.rating .fuzzy{border-color:#675c36}.rating .good{border-color:#315f52}.rating .easy{border-color:#514b78}
+.sessionline{display:flex;gap:8px;align-items:center;margin:7px 0 9px}.sessionline .progress{flex:1}
+.float-reward{position:fixed;pointer-events:none;z-index:1000;font-weight:900;font-size:20px;animation:floatUp .95s ease-out forwards;text-shadow:0 2px 15px #000}
+@keyframes floatUp{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-85px) scale(1.16)}}
+.flash{position:fixed;inset:0;pointer-events:none;z-index:900;background:radial-gradient(circle,rgba(255,209,102,.17),transparent 60%);animation:fadeFlash .45s forwards}
+@keyframes fadeFlash{from{opacity:1}to{opacity:0}}
+.particle{position:fixed;z-index:999;pointer-events:none;width:8px;height:12px;border-radius:2px;animation:fall 1.2s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes fall{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+.complete{display:none;text-align:center;padding:30px 20px;margin-top:14px}
+.complete h2{font:700 34px Georgia,serif;margin:6px 0}
+.loot{font-size:46px;filter:drop-shadow(0 0 22px rgba(255,209,102,.25));margin:12px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}
+.complete .btnrow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.secondary{border:1px solid var(--line);background:#151b28;color:var(--ink);padding:11px 15px;border-radius:11px}
+.primary{border:0;background:linear-gradient(90deg,var(--accent),var(--accent2));color:white;padding:11px 15px;border-radius:11px;font-weight:800}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#111827;border:1px solid #34415a;color:#fff;padding:10px 14px;border-radius:999px;z-index:1200;font-size:13px;box-shadow:var(--shadow)}
+.hidden{display:none!important}
+.stim-max body{}
+body.max-stim .panel{box-shadow:0 18px 55px rgba(81,68,190,.16),var(--shadow)}
+body.max-stim .card:not(.flip){animation:breathe 2.6s ease-in-out infinite}
+@keyframes breathe{50%{box-shadow:0 18px 60px rgba(139,124,255,.24)}}
+@media(max-width:720px){
+ .reward-grid{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr 1fr}.card{min-height:500px}.word{font-size:39px}.face{padding:23px 20px}.rating{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+
+/* iPhone/PWA tuning */
+html { -webkit-text-size-adjust: 100%; }
+body {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  overscroll-behavior-y: none;
+  min-height: 100dvh;
+}
+button,select { touch-action: manipulation; }
+.app {
+  padding-top: max(18px, env(safe-area-inset-top));
+  padding-left: max(15px, env(safe-area-inset-left));
+  padding-right: max(15px, env(safe-area-inset-right));
+  padding-bottom: max(72px, calc(env(safe-area-inset-bottom) + 42px));
+}
+.iphone-install {
+  margin-top: 13px;
+  padding: 13px 14px;
+  border: 1px solid #3a4661;
+  border-radius: 14px;
+  background: rgba(139,124,255,.09);
+  color: #d8def0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.iphone-install b { color:#fff; }
+.quick-row {
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:9px;
+  margin-top:15px;
+}
+.quick-start {
+  border:0;
+  min-height:58px;
+  border-radius:15px;
+  padding:13px 15px;
+  color:#fff;
+  background:linear-gradient(90deg,#ff6685,#ff9a53);
+  font-weight:900;
+  font-size:17px;
+  box-shadow:0 9px 28px rgba(255,102,133,.20);
+}
+.quick-sub {
+  display:block;
+  font-size:10px;
+  font-weight:600;
+  opacity:.8;
+  margin-top:3px;
+}
+.configure-start {
+  border:1px solid var(--line);
+  min-height:58px;
+  border-radius:15px;
+  padding:13px 12px;
+  color:var(--ink);
+  background:#151b28;
+  font-weight:800;
+}
+.ios-home {
+  position:fixed;
+  right:max(14px,env(safe-area-inset-right));
+  bottom:max(13px,calc(env(safe-area-inset-bottom) + 8px));
+  z-index:850;
+  border:1px solid #3a4661;
+  background:rgba(15,20,32,.94);
+  color:#eef2ff;
+  padding:10px 13px;
+  border-radius:999px;
+  box-shadow:0 8px 28px rgba(0,0,0,.35);
+  font-size:12px;
+  backdrop-filter:blur(14px);
+}
+@media(max-width:540px){
+  .top{align-items:flex-start}
+  .brand{font-size:25px}
+  .dashboard{padding:14px}
+  .controls{grid-template-columns:1fr 1fr;gap:8px}
+  .field select,.field input{min-height:47px;font-size:16px}
+  .reward-grid{gap:7px}
+  .stat{padding:10px}
+  .stat b{font-size:20px}
+  .card{min-height:min(520px,62dvh)}
+  .face{padding:21px 18px}
+  .word{font-size:clamp(35px,10vw,47px)}
+  .meaning{font-size:21px}
+  .example{font-size:17px}
+  .rating{
+    position:sticky;
+    bottom:calc(env(safe-area-inset-bottom) + 4px);
+    z-index:700;
+    padding:8px 0 4px;
+    background:linear-gradient(180deg,rgba(13,16,24,0),rgba(13,16,24,.96) 24%);
+  }
+  .rating button{min-height:57px}
+  .hud{font-size:12px}
+  .pill{padding:6px 8px}
+}
+@media(max-width:390px){
+  .controls{grid-template-columns:1fr}
+  .quick-row{grid-template-columns:1fr}
+  .card{min-height:56dvh}
+}
+
+
+.brand{color:#ffe8b5;text-shadow:0 0 18px rgba(255,197,108,.18)}
+.brand span{color:var(--accent);text-shadow:0 0 10px rgba(71,244,230,.42)}
+.panel{
+  background:
+    radial-gradient(circle at 12% 10%,rgba(255,197,108,.08),transparent 22%),
+    radial-gradient(circle at 88% 15%,rgba(71,244,230,.08),transparent 22%),
+    linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015)),
+    var(--panel);
+  border:1px solid var(--line);
+  box-shadow:0 0 0 1px rgba(255,197,108,.06) inset,var(--shadow);
+}
+.pill{
+  border:1px solid rgba(216,162,79,.55);
+  background:linear-gradient(180deg,rgba(255,197,108,.08),rgba(255,255,255,.03));
+  color:#f7dab0;
+  box-shadow:0 0 16px rgba(255,197,108,.06) inset;
+}
+.stat{
+  background:
+   radial-gradient(circle at 86% 14%,rgba(71,244,230,.08),transparent 20%),
+   linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015)),
+   var(--panel2);
+  border:1px solid #6a4b32;
+}
+.xpbar,.progress{background:#3b281e}
+.xpbar>div,.progress>div{background:linear-gradient(90deg,var(--gold),var(--accent),var(--accent2))}
+.field select,.field input,.count-preset button,.secondary,.configure-start{
+  background:#19110d;color:var(--ink);border:1px solid #6f4c35;
+  box-shadow:0 0 0 1px rgba(255,197,108,.05) inset;
+}
+.start,.quick-start,.primary{
+  background:linear-gradient(90deg,#d9903d,#47f4e6,#ff59c8);
+  color:#130c09;
+  text-shadow:none;
+  box-shadow:0 10px 30px rgba(255,89,200,.18),0 0 16px rgba(71,244,230,.18);
+}
+.primary{font-weight:900}
+.card .face{
+  background:
+   radial-gradient(circle at 16% 10%,rgba(255,197,108,.10),transparent 23%),
+   radial-gradient(circle at 84% 18%,rgba(71,244,230,.07),transparent 22%),
+   linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01)),
+   linear-gradient(180deg,#241813,#1a120f);
+  border:1px solid #7a563a;
+  box-shadow:0 0 0 1px rgba(255,197,108,.05) inset,var(--shadow);
+}
+.word{color:#fff1d0;text-shadow:0 0 18px rgba(255,197,108,.11)}
+.category{
+  border:1px solid rgba(71,244,230,.45);
+  color:#bffdfa;
+  background:rgba(71,244,230,.06);
+  box-shadow:0 0 14px rgba(71,244,230,.08) inset;
+}
+.meaning{color:#fff3db}
+.pos,.hint,.deck-status,.sub,.stats,.level-title,.field label,.help,.note,.reveal-hint{color:var(--muted)}
+.rating button{
+  background:linear-gradient(180deg,#211713,#17100d);
+  border-color:#75553c;
+  box-shadow:0 0 0 1px rgba(255,197,108,.04) inset;
+}
+.rating .again{border-color:#b35c37}
+.rating .fuzzy{border-color:#c58d3d}
+.rating .good{border-color:#3b9b8f}
+.rating .easy{border-color:#9b4acb}
+.boss{
+  background:linear-gradient(90deg,#d8a24f,#47f4e6,#ff59c8);
+  color:#180f0b;
+  box-shadow:0 0 24px rgba(255,197,108,.24);
+}
+.complete h2{
+  color:#ffe6b8;
+  text-shadow:0 0 20px rgba(255,197,108,.16),0 0 34px rgba(71,244,230,.10);
+}
+.loot{
+  filter:drop-shadow(0 0 18px rgba(255,197,108,.25)) drop-shadow(0 0 18px rgba(71,244,230,.10));
+}
+.toast{
+  background:#1a120f;border:1px solid #785539;color:#fff4dd;
+  box-shadow:0 0 24px rgba(255,197,108,.12),var(--shadow);
+}
+.ios-home{
+  border:1px solid rgba(71,244,230,.45);
+  background:linear-gradient(180deg,rgba(32,22,18,.96),rgba(18,12,10,.96));
+  color:#eafefc;
+  box-shadow:0 0 20px rgba(71,244,230,.10);
+}
+.iphone-install{
+  border:1px solid rgba(216,162,79,.55);
+  background:linear-gradient(180deg,rgba(216,162,79,.10),rgba(71,244,230,.05));
+  color:#f4e1bf;
+}
+.float-reward{
+  text-shadow:0 0 20px rgba(255,197,108,.22),0 0 28px rgba(71,244,230,.18),0 2px 15px #000;
+}
+.flash{
+  background:radial-gradient(circle,rgba(71,244,230,.18),transparent 52%),radial-gradient(circle,rgba(255,89,200,.16),transparent 60%);
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand">PhiloLex Neon Steam<span>NEON STEAM ACADEMY</span></div>
+    <div class="pill" id="deckPill">蒸気語彙エンジンを起動中…</div>
+  </div>
+
+  <section class="panel dashboard" id="dashboard">
+    <div class="reward-grid">
+      <div class="stat"><b id="level">Lv.1</b><small id="title">Reader</small></div>
+      <div class="stat"><b id="xp">0 XP</b><small>総Aether XP</small></div>
+      <div class="stat"><b id="coins">0 ◈</b><small>Brass Gears</small></div>
+      <div class="stat"><b id="mastered">0</b><small>調律済み語</small></div>
+    </div>
+    <div class="level-title"><span id="nextLevelText">次の蒸気階級まで</span><span id="xpNext"></span></div>
+    <div class="xpbar"><div id="xpbar"></div></div>
+
+    <div class="controls">
+      <div class="field">
+        <label>工房モード</label>
+        <select id="mode">
+          <option value="auto">お任せ（弱点＋復習＋新規）</option>
+          <option value="due">復習のみ</option>
+          <option value="weak">うろ覚え・未定着のみ</option>
+          <option value="new">新規のみ</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>1回の単語数</label>
+        <select id="sessionSize">
+          <option>5</option><option selected>10</option><option>15</option><option>20</option><option>30</option><option>50</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>蒸気スプリント</label>
+        <select id="sprint">
+          <option value="0">時間制限なし</option>
+          <option value="3">3分</option>
+          <option value="5" selected>5分</option>
+          <option value="10">10分</option>
+          <option value="15">15分</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>ネオン演出</label>
+        <select id="stim">
+          <option value="off">静音</option>
+          <option value="normal" selected>標準</option>
+          <option value="max">過給</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls" style="grid-template-columns:1fr 1fr 1fr 1fr">
+      <div class="field"><label>機関音</label><select id="sound"><option value="on" selected>ON</option><option value="off">静音</option></select></div>
+      <div class="field"><label>出題カテゴリ</label><select id="category"><option value="all">すべて</option></select></div>
+      <div class="field"><label>新規語の比率（お任せ）</label><select id="newRatio"><option value=".1">10%</option><option value=".2" selected>20%</option><option value=".3">30%</option><option value=".4">40%</option></select></div>
+      <div class="field"><label>カードを裏返す</label><select id="flipMode"><option value="tap" selected>タップ</option><option value="auto">1.3秒後自動</option></select></div>
+    </div>
+
+    <div class="quick-row">
+      <button class="quick-start" id="quickStart" disabled>⚙ 10語を点火<span class="quick-sub">お任せ / 5分 / ネオン過給</span></button>
+      <button class="configure-start" id="startBtn" disabled>工房設定で開始</button>
+    </div>
+    <div class="iphone-install" id="iosInstall">
+      <b>iPhoneではホーム画面に追加すると、ネオン蒸気工房のアプリのように使えます。</b><br>
+      Safariの共有ボタン <b>□↑</b> → <b>「ホーム画面に追加」</b> → 「追加」。以後はPhiloLexのアイコンを1回タップするだけです。
+    </div>
+    <div class="deck-status" id="deckStatus">
+      初回のみオンライン語彙データを読み込み、1500語の蒸気工房デッキへ構成してこの端末へ保存します。2回目以降はキャッシュから即起動できます。
+    </div>
+  </section>
+
+  <section class="study" id="study">
+    <button class="ios-home" id="iosHome">⌂ 終了</button>
+    <div class="hud">
+      <div><span class="combo" id="combo">COMBO 0</span> <span id="fever"></span></div>
+      <div class="pill timer" id="timer">∞</div>
+      <div class="pill" id="sessionXp">+0 XP</div>
+    </div>
+    <div class="sessionline"><span class="pill" id="counter">1 / 10</span><div class="progress"><div id="sessionProgress"></div></div><span class="pill" id="weakLabel">AUTO</span></div>
+    <div class="card-wrap">
+      <div class="card" id="card">
+        <div class="face front" id="front"></div>
+        <div class="face back" id="back"></div>
+      </div>
+    </div>
+    <div class="rating" id="rating">
+      <button class="again" data-rate="again">忘れた<small>すぐ再登場</small></button>
+      <button class="fuzzy" data-rate="fuzzy">うろ覚え<small>少し後で再登場</small></button>
+      <button class="good" data-rate="good">覚えた<small>間隔を伸ばす</small></button>
+      <button class="easy" data-rate="easy">余裕<small>長めに送る</small></button>
+    </div>
+  </section>
+
+  <section class="panel complete" id="complete">
+    <div class="loot">✦</div>
+    <h2>BOILER STABILIZED</h2>
+    <div id="clearMsg" style="color:var(--muted)"></div>
+    <div class="summary-grid">
+      <div class="stat"><b id="sumXp">0</b><small>獲得XP</small></div>
+      <div class="stat"><b id="sumCoins">0</b><small>獲得◈</small></div>
+      <div class="stat"><b id="sumRemember">0%</b><small>覚えた率</small></div>
+    </div>
+    <div class="btnrow">
+      <button class="primary" id="fiveMore">さらに5語を装填</button>
+      <button class="secondary" id="backHome">工房へ戻る</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const EMBEDDED = [{"word":"abduction","meaning":"アブダクション；最良説明への推論","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The conclusion is supported by abduction rather than strict deduction.","note":"inference to the best explanation。","source":"PhiloLex curated philosophy deck"},{"word":"a priori","meaning":"ア・プリオリな；経験に依存せずに","pos":"adj","category":"Philosophy core","priority":5,"definition":"","example":"The argument aims to establish an a priori constraint on rational belief.","note":"a posteriori と対。","source":"PhiloLex curated philosophy deck"},{"word":"a posteriori","meaning":"ア・ポステリオリな；経験に基づく","pos":"adj","category":"Philosophy core","priority":5,"definition":"","example":"Whether the mechanism exists is an a posteriori question.","note":"経験的調査に依存。","source":"PhiloLex curated philosophy deck"},{"word":"actualism","meaning":"現実主義；可能世界論における現実主義","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of actualism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"agency","meaning":"行為者性；行為能力","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"Social structures can constrain agency without eliminating it.","note":"social/feminist philosophy でも中核。","source":"PhiloLex curated philosophy deck"},{"word":"agent","meaning":"行為者；主体","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of agent plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"alethic","meaning":"真理に関する；真理様相の","pos":"adj","category":"Logic / metaphysics","priority":4,"definition":"","example":"Alethic modality concerns necessity, possibility, and truth.","note":"modal logic。","source":"PhiloLex curated philosophy deck"},{"word":"analytic","meaning":"分析的な；分析哲学の","pos":"adj","category":"Philosophy core","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely analytic in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"analyticity","meaning":"分析性","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of analyticity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"anti-realism","meaning":"反実在論","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"Moral anti-realism denies robustly mind-independent moral facts.","note":"領域ごとに意味が変わる。","source":"PhiloLex curated philosophy deck"},{"word":"appearance","meaning":"現れ；見かけ","pos":"n","category":"Phenomenology","priority":4,"definition":"","example":"The concept of appearance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"argument","meaning":"論証；議論","pos":"n","category":"Argumentation","priority":5,"definition":"","example":"The concept of argument plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"argumentative","meaning":"論証的な；議論に関する","pos":"adj","category":"Argumentation","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely argumentative in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"assertion","meaning":"主張；断言","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of assertion plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"attitude","meaning":"態度；命題的態度","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of attitude plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"attribution","meaning":"帰属；属性付与","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of attribution plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"autonomy","meaning":"自律","pos":"n","category":"Ethics / social philosophy","priority":5,"definition":"","example":"Relational autonomy emphasizes the social conditions of self-direction.","note":"moral/feminist philosophy。","source":"PhiloLex curated philosophy deck"},{"word":"axiology","meaning":"価値論","pos":"n","category":"Ethics","priority":4,"definition":"","example":"The concept of axiology plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"axiom","meaning":"公理","pos":"n","category":"Logic","priority":4,"definition":"","example":"The concept of axiom plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"basic belief","meaning":"基礎的信念","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of basic belief plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"belief","meaning":"信念","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of belief plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"belief revision","meaning":"信念改訂","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of belief revision plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"causal","meaning":"因果的な","pos":"adj","category":"Philosophy of science","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely causal in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"causation","meaning":"因果；因果関係","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The concept of causation plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"cause","meaning":"原因；原因となるもの","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The concept of cause plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"coherentism","meaning":"整合説；整合主義","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of coherentism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"compatibilism","meaning":"両立論","pos":"n","category":"Action / free will","priority":4,"definition":"","example":"Compatibilism holds that free will can be compatible with determinism.","note":"free will 論。","source":"PhiloLex curated philosophy deck"},{"word":"concept","meaning":"概念","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of concept plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"conceptual analysis","meaning":"概念分析","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"Conceptual analysis asks what conditions govern the application of a concept.","note":"哲学的方法論。","source":"PhiloLex curated philosophy deck"},{"word":"conceptual engineering","meaning":"概念工学","pos":"n","category":"Philosophy of language","priority":4,"definition":"","example":"The concept of conceptual engineering plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"conceptual scheme","meaning":"概念枠組み","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of conceptual scheme plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"condition","meaning":"条件","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of condition plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"constitutive","meaning":"構成的な","pos":"adj","category":"Philosophy core","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely constitutive in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"contingency","meaning":"偶然性；非必然性","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The concept of contingency plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"contingent","meaning":"偶然的な；必然ではない","pos":"adj","category":"Metaphysics","priority":5,"definition":"","example":"The connection is historically contingent rather than conceptually necessary.","note":"necessary と対置。","source":"PhiloLex curated philosophy deck"},{"word":"contradiction","meaning":"矛盾","pos":"n","category":"Logic","priority":5,"definition":"","example":"The concept of contradiction plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"contradictory","meaning":"矛盾した","pos":"adj","category":"Logic","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely contradictory in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"contrary","meaning":"反対の；反対命題","pos":"adj","category":"Logic","priority":3,"definition":"","example":"The paper asks whether the proposed distinction is genuinely contrary in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"counterexample","meaning":"反例","pos":"n","category":"Argumentation","priority":5,"definition":"","example":"A counterexample can refute a universal conditional claim.","note":"最重要語の一つ。","source":"PhiloLex curated philosophy deck"},{"word":"counterfactual","meaning":"反事実的な；反事実条件文","pos":"adj","category":"Metaphysics","priority":5,"definition":"","example":"The causal analysis appeals to counterfactual dependence.","note":"if things had been otherwise。","source":"PhiloLex curated philosophy deck"},{"word":"credence","meaning":"信念度；確信度","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of credence plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"criterion","meaning":"基準","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of criterion plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"deduction","meaning":"演繹","pos":"n","category":"Logic","priority":5,"definition":"","example":"The concept of deduction plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"deductive","meaning":"演繹的な","pos":"adj","category":"Logic","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely deductive in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"defeasibility","meaning":"取消可能性；反証可能性","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of defeasibility plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"defeasible","meaning":"追加情報により覆りうる","pos":"adj","category":"Epistemology","priority":5,"definition":"","example":"Testimonial entitlement may be prima facie and defeasible.","note":"追加情報で覆りうる。","source":"PhiloLex curated philosophy deck"},{"word":"defeater","meaning":"正当化を打ち消す要因","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Evidence of deception can function as a defeater for testimonial justification.","note":"rebutting / undercutting。","source":"PhiloLex curated philosophy deck"},{"word":"definition","meaning":"定義","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of definition plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"deontic","meaning":"義務・許可に関する","pos":"adj","category":"Ethics / logic","priority":4,"definition":"","example":"Deontic logic formalizes obligation, permission, and prohibition.","note":"deontology と関連。","source":"PhiloLex curated philosophy deck"},{"word":"deontology","meaning":"義務論","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of deontology plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"descriptive","meaning":"記述的な","pos":"adj","category":"Philosophy core","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely descriptive in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"determinism","meaning":"決定論","pos":"n","category":"Action / free will","priority":5,"definition":"","example":"The debate concerns whether determinism is compatible with responsibility.","note":"free will 論。","source":"PhiloLex curated philosophy deck"},{"word":"dialectic","meaning":"議論の応酬；弁証法","pos":"n","category":"Argumentation","priority":5,"definition":"","example":"The dialectic shifts once the skeptic grants the reliability of perception.","note":"反論と応答の流れ。","source":"PhiloLex curated philosophy deck"},{"word":"disposition","meaning":"傾向性；性向","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of disposition plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"dispositional","meaning":"傾向性的な","pos":"adj","category":"Metaphysics","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely dispositional in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"doxastic","meaning":"信念に関する","pos":"adj","category":"Epistemology","priority":5,"definition":"","example":"The argument concerns doxastic responsibility rather than action.","note":"doxa=belief。","source":"PhiloLex curated philosophy deck"},{"word":"dualism","meaning":"二元論","pos":"n","category":"Philosophy of mind","priority":5,"definition":"","example":"The concept of dualism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"duty","meaning":"義務","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of duty plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"emergence","meaning":"創発","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"Strong emergence denies reduction of higher-level properties.","note":"mind/science。","source":"PhiloLex curated philosophy deck"},{"word":"emergent","meaning":"創発的な","pos":"adj","category":"Metaphysics","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely emergent in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"empirical","meaning":"経験的な；実証的な","pos":"adj","category":"Philosophy of science","priority":5,"definition":"","example":"The claim has both an empirical and a conceptual component.","note":"哲学論文でも頻出。","source":"PhiloLex curated philosophy deck"},{"word":"empiricism","meaning":"経験論","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Empiricism gives sensory experience a central epistemic role.","note":"rationalism と対。","source":"PhiloLex curated philosophy deck"},{"word":"entailment","meaning":"含意関係；論理的帰結","pos":"n","category":"Logic","priority":5,"definition":"","example":"The concept of entailment plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"epistemic","meaning":"認識的な","pos":"adj","category":"Epistemology","priority":5,"definition":"","example":"The practice distributes epistemic authority unevenly.","note":"epistemology の形容詞。","source":"PhiloLex curated philosophy deck"},{"word":"epistemology","meaning":"認識論","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Social epistemology studies knowledge and inquiry as socially situated.","note":"knowledge, justification, evidence。","source":"PhiloLex curated philosophy deck"},{"word":"essence","meaning":"本質","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The argument does not presuppose fixed essences of social categories.","note":"essentialism と関連。","source":"PhiloLex curated philosophy deck"},{"word":"essential","meaning":"本質的な；必然的な","pos":"adj","category":"Metaphysics","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely essential in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"essentialism","meaning":"本質主義","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The concept of essentialism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"ethics","meaning":"倫理学","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of ethics plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"externalism","meaning":"外在主義","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Externalism allows justification to depend on factors outside reflective access.","note":"internalism と対。","source":"PhiloLex curated philosophy deck"},{"word":"facticity","meaning":"事実性；与えられた状況性","pos":"n","category":"Phenomenology","priority":4,"definition":"","example":"The concept of facticity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"fallacy","meaning":"誤謬","pos":"n","category":"Logic / argumentation","priority":5,"definition":"","example":"The concept of fallacy plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"fallibilism","meaning":"可謬主義","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"Fallibilism allows knowledge even when error remains possible.","note":"certainty と knowledge を分離。","source":"PhiloLex curated philosophy deck"},{"word":"free will","meaning":"自由意志","pos":"n","category":"Action / free will","priority":5,"definition":"","example":"The concept of free will plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"foundationalism","meaning":"基礎づけ主義","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Foundationalism explains justification by appeal to basic beliefs.","note":"coherentism と対比。","source":"PhiloLex curated philosophy deck"},{"word":"ground","meaning":"根拠；基礎づける","pos":"v","category":"Metaphysics","priority":5,"definition":"","example":"The author uses this term to ground a distinction that matters to the argument.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"grounding","meaning":"形而上学的基礎づけ","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The paper asks whether social facts are grounded in individual attitudes.","note":"causation と区別。","source":"PhiloLex curated philosophy deck"},{"word":"hermeneutics","meaning":"解釈学","pos":"n","category":"Phenomenology","priority":5,"definition":"","example":"Hermeneutics emphasizes the conditions under which interpretation is possible.","note":"continental/social epistemology。","source":"PhiloLex curated philosophy deck"},{"word":"holism","meaning":"全体論","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of holism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"identity","meaning":"同一性；アイデンティティ","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The puzzle concerns identity over time rather than qualitative similarity.","note":"numerical/social identity。","source":"PhiloLex curated philosophy deck"},{"word":"idealism","meaning":"観念論","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The concept of idealism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"implication","meaning":"含意；帰結","pos":"n","category":"Argumentation","priority":5,"definition":"","example":"One implication of the view is that responsibility can be distributed.","note":"entailment より広い。","source":"PhiloLex curated philosophy deck"},{"word":"implicature","meaning":"語用論的含意","pos":"n","category":"Philosophy of language","priority":4,"definition":"","example":"The utterance conveys a critical implicature without stating it explicitly.","note":"Gricean pragmatics。","source":"PhiloLex curated philosophy deck"},{"word":"incommensurability","meaning":"通約不可能性","pos":"n","category":"Philosophy of science","priority":4,"definition":"","example":"The concept of incommensurability plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"indeterminacy","meaning":"不確定性；決定不能性","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of indeterminacy plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"induction","meaning":"帰納","pos":"n","category":"Logic / science","priority":5,"definition":"","example":"Induction projects observed regularities beyond observed cases.","note":"deduction/abduction と区別。","source":"PhiloLex curated philosophy deck"},{"word":"inductive","meaning":"帰納的な","pos":"adj","category":"Logic / science","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely inductive in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"inference","meaning":"推論","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The status of the conclusion depends on the quality of the inference.","note":"infer / inferential。","source":"PhiloLex curated philosophy deck"},{"word":"inferential","meaning":"推論的な","pos":"adj","category":"Epistemology","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely inferential in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"intentionality","meaning":"志向性","pos":"n","category":"Phenomenology","priority":5,"definition":"","example":"Phenomenology uses intentionality for consciousness directed toward objects.","note":"「意図」だけではない。","source":"PhiloLex curated philosophy deck"},{"word":"internalism","meaning":"内在主義","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Internalism requires justificatory factors to be accessible to the subject.","note":"externalism と対。","source":"PhiloLex curated philosophy deck"},{"word":"intuition","meaning":"直観","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The thought experiment tests an intuition about personal identity.","note":"哲学的方法論上の用法。","source":"PhiloLex curated philosophy deck"},{"word":"intuitionism","meaning":"直観主義","pos":"n","category":"Ethics / logic","priority":3,"definition":"","example":"The concept of intuitionism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"intersubjectivity","meaning":"間主観性","pos":"n","category":"Phenomenology","priority":5,"definition":"","example":"The account treats objectivity as dependent on forms of intersubjectivity.","note":"phenomenology/social theory。","source":"PhiloLex curated philosophy deck"},{"word":"justification","meaning":"正当化","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"A true belief can fail to be knowledge if it lacks justification.","note":"epistemology の基本。","source":"PhiloLex curated philosophy deck"},{"word":"knowledge","meaning":"知識","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of knowledge plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"lifeworld","meaning":"生活世界","pos":"n","category":"Phenomenology","priority":5,"definition":"","example":"The lifeworld concerns taken-for-granted structures of experience.","note":"Schutz/Husserl。","source":"PhiloLex curated philosophy deck"},{"word":"logic","meaning":"論理学；論理","pos":"n","category":"Logic","priority":5,"definition":"","example":"The concept of logic plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"logical form","meaning":"論理形式","pos":"n","category":"Logic","priority":4,"definition":"","example":"The concept of logical form plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"materialism","meaning":"唯物論；物質主義","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The concept of materialism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"meaning","meaning":"意味","pos":"n","category":"Philosophy of language","priority":5,"definition":"","example":"The concept of meaning plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"metaethics","meaning":"メタ倫理学","pos":"n","category":"Ethics","priority":4,"definition":"","example":"The concept of metaethics plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"metaphysics","meaning":"形而上学","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The metaphysics of social kinds asks what makes social categories real.","note":"ontology と関連。","source":"PhiloLex curated philosophy deck"},{"word":"modality","meaning":"様相","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"Modal claims concern what is necessary, possible, or impossible.","note":"necessity/possibility。","source":"PhiloLex curated philosophy deck"},{"word":"monism","meaning":"一元論","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of monism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"moral realism","meaning":"道徳的実在論","pos":"n","category":"Ethics","priority":4,"definition":"","example":"The concept of moral realism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"natural kind","meaning":"自然種","pos":"n","category":"Metaphysics / science","priority":4,"definition":"","example":"The concept of natural kind plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"naturalism","meaning":"自然主義","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"Methodological naturalism seeks continuity between philosophy and empirical inquiry.","note":"複数の意味がある。","source":"PhiloLex curated philosophy deck"},{"word":"necessary condition","meaning":"必要条件","pos":"n","category":"Logic","priority":5,"definition":"","example":"Being unmarried is a necessary condition for being a bachelor.","note":"necessary but not sufficient。","source":"PhiloLex curated philosophy deck"},{"word":"necessity","meaning":"必然性","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The concept of necessity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"nihilism","meaning":"虚無主義；存在論的否定論","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of nihilism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"nominalism","meaning":"唯名論","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"Nominalism denies that universals exist as abstract entities.","note":"universals 問題。","source":"PhiloLex curated philosophy deck"},{"word":"norm","meaning":"規範","pos":"n","category":"Ethics / social philosophy","priority":5,"definition":"","example":"The concept of norm plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"normative","meaning":"規範的な","pos":"adj","category":"Philosophy core","priority":5,"definition":"","example":"The paper distinguishes descriptive claims from normative claims.","note":"ought/reason/value。","source":"PhiloLex curated philosophy deck"},{"word":"normativity","meaning":"規範性","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The question is how the normativity of reasons should be explained.","note":"normative の名詞。","source":"PhiloLex curated philosophy deck"},{"word":"objectivity","meaning":"客観性","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of objectivity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"ontology","meaning":"存在論","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"Social ontology asks what kinds of entities institutions are.","note":"what exists。","source":"PhiloLex curated philosophy deck"},{"word":"particular","meaning":"個物；個別的なもの","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of particular plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"phenomenal","meaning":"現象的な","pos":"adj","category":"Philosophy of mind","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely phenomenal in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"phenomenology","meaning":"現象学","pos":"n","category":"Phenomenology","priority":5,"definition":"","example":"Phenomenology investigates the structures of lived experience.","note":"method/tradition。","source":"PhiloLex curated philosophy deck"},{"word":"physicalism","meaning":"物理主義","pos":"n","category":"Philosophy of mind","priority":5,"definition":"","example":"The concept of physicalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"possible world","meaning":"可能世界","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"A proposition is necessary if it is true in every possible world.","note":"modal metaphysics。","source":"PhiloLex curated philosophy deck"},{"word":"pragmatism","meaning":"プラグマティズム；実用主義","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of pragmatism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"predicate","meaning":"述語","pos":"n","category":"Logic / language","priority":5,"definition":"","example":"The concept of predicate plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"premise","meaning":"前提","pos":"n","category":"Argumentation","priority":5,"definition":"","example":"If either premise is false, the argument may be valid but unsound.","note":"argument structure。","source":"PhiloLex curated philosophy deck"},{"word":"presupposition","meaning":"前提；前提含意","pos":"n","category":"Philosophy of language","priority":5,"definition":"","example":"The question carries a presupposition that the act was voluntary.","note":"logic/pragmatics。","source":"PhiloLex curated philosophy deck"},{"word":"principle","meaning":"原理；原則","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of principle plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"proposition","meaning":"命題","pos":"n","category":"Logic / language","priority":5,"definition":"","example":"Beliefs are often modeled as attitudes toward propositions.","note":"sentence とは区別。","source":"PhiloLex curated philosophy deck"},{"word":"propositional attitude","meaning":"命題的態度","pos":"n","category":"Philosophy of mind","priority":4,"definition":"","example":"The concept of propositional attitude plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"qualia","meaning":"クオリア；感覚質","pos":"n","category":"Philosophy of mind","priority":4,"definition":"","example":"The concept of qualia plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"rationalism","meaning":"合理論","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of rationalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"rationality","meaning":"合理性","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of rationality plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"realism","meaning":"実在論","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"Scientific realism treats successful theories as approximately true.","note":"領域ごとに複数。","source":"PhiloLex curated philosophy deck"},{"word":"reason","meaning":"理由；理性","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The concept of reason plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"reduction","meaning":"還元","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of reduction plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"reductionism","meaning":"還元主義","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"The paper rejects reductionism about social explanation.","note":"reduce/reductive。","source":"PhiloLex curated philosophy deck"},{"word":"reliabilism","meaning":"信頼性主義","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Reliabilism links justification to reliable belief-forming processes.","note":"externalist epistemology。","source":"PhiloLex curated philosophy deck"},{"word":"representation","meaning":"表象；表現","pos":"n","category":"Philosophy of mind","priority":5,"definition":"","example":"The concept of representation plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"representationalism","meaning":"表象主義","pos":"n","category":"Philosophy of mind","priority":4,"definition":"","example":"The concept of representationalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"skepticism","meaning":"懐疑論","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"Radical skepticism challenges perceptual knowledge.","note":"skeptical / skeptic。","source":"PhiloLex curated philosophy deck"},{"word":"soundness","meaning":"健全性；前提が真で妥当な論証であること","pos":"n","category":"Logic","priority":5,"definition":"","example":"A deductive argument is sound when it is valid and its premises are true.","note":"validity と区別。","source":"PhiloLex curated philosophy deck"},{"word":"substance","meaning":"実体","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of substance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"sufficient condition","meaning":"十分条件","pos":"n","category":"Logic","priority":5,"definition":"","example":"Being a square is a sufficient condition for being a rectangle.","note":"necessary condition と区別。","source":"PhiloLex curated philosophy deck"},{"word":"supererogation","meaning":"義務を超える行為","pos":"n","category":"Ethics","priority":3,"definition":"","example":"The concept of supererogation plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"supervenience","meaning":"付随性；スーパーヴィーニエンス","pos":"n","category":"Metaphysics","priority":5,"definition":"","example":"Mental properties may supervene on physical properties without reducing to them.","note":"no A-difference without B-difference。","source":"PhiloLex curated philosophy deck"},{"word":"syllogism","meaning":"三段論法","pos":"n","category":"Logic","priority":4,"definition":"","example":"The concept of syllogism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"teleology","meaning":"目的論","pos":"n","category":"Metaphysics / ethics","priority":4,"definition":"","example":"The concept of teleology plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"testimony","meaning":"証言","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The epistemology of testimony asks when we may believe what others tell us.","note":"social epistemology。","source":"PhiloLex curated philosophy deck"},{"word":"thought experiment","meaning":"思考実験","pos":"n","category":"Philosophy core","priority":5,"definition":"","example":"The thought experiment isolates a variable to test a conceptual judgment.","note":"Gettier case 等。","source":"PhiloLex curated philosophy deck"},{"word":"transcendental","meaning":"超越論的な","pos":"adj","category":"Phenomenology","priority":5,"definition":"","example":"The paper asks whether the proposed distinction is genuinely transcendental in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"trope","meaning":"個別的性質；トロープ","pos":"n","category":"Metaphysics","priority":3,"definition":"","example":"The concept of trope plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"truth","meaning":"真理","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of truth plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"truth condition","meaning":"真理条件","pos":"n","category":"Philosophy of language","priority":4,"definition":"","example":"The concept of truth condition plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"truthmaker","meaning":"真理形成者","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"Truthmaker theory asks what in reality makes a proposition true.","note":"truthmaker theory。","source":"PhiloLex curated philosophy deck"},{"word":"underdetermination","meaning":"決定不全","pos":"n","category":"Philosophy of science","priority":5,"definition":"","example":"The evidence may underdetermine which theory is correct.","note":"philosophy of science。","source":"PhiloLex curated philosophy deck"},{"word":"universal","meaning":"普遍者","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of universal plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"validity","meaning":"妥当性；論理的妥当性","pos":"n","category":"Logic","priority":5,"definition":"","example":"Validity concerns whether true premises could lead to a false conclusion.","note":"truth/soundness と区別。","source":"PhiloLex curated philosophy deck"},{"word":"value","meaning":"価値","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of value plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"virtue","meaning":"徳","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of virtue plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"warrant","meaning":"認識的保証；正当化根拠","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The evidence does not warrant such a strong conclusion.","note":"認識論では technical term。","source":"PhiloLex curated philosophy deck"},{"word":"weakness of will","meaning":"意志の弱さ；アクラシア","pos":"n","category":"Action / ethics","priority":3,"definition":"","example":"The concept of weakness of will plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"world","meaning":"世界","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of world plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"access internalism","meaning":"アクセス内在主義","pos":"n","category":"Epistemology","priority":3,"definition":"","example":"The concept of access internalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"acquaintance","meaning":"面識；直接的認識","pos":"n","category":"Epistemology","priority":3,"definition":"","example":"The concept of acquaintance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"anti-individualism","meaning":"反個人主義","pos":"n","category":"Philosophy of mind","priority":3,"definition":"","example":"The concept of anti-individualism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"anti-foundationalism","meaning":"反基礎づけ主義","pos":"n","category":"Epistemology","priority":3,"definition":"","example":"The concept of anti-foundationalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"aporia","meaning":"アポリア；行き詰まり","pos":"n","category":"Philosophy core","priority":3,"definition":"","example":"The concept of aporia plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"assertoric","meaning":"断定的な","pos":"adj","category":"Logic / language","priority":3,"definition":"","example":"The paper asks whether the proposed distinction is genuinely assertoric in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"asymmetry","meaning":"非対称性","pos":"n","category":"Philosophy core","priority":4,"definition":"","example":"The concept of asymmetry plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"atomism","meaning":"原子論；要素還元的立場","pos":"n","category":"Philosophy core","priority":3,"definition":"","example":"The concept of atomism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"categorical imperative","meaning":"定言命法","pos":"n","category":"Ethics","priority":4,"definition":"","example":"The concept of categorical imperative plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"category mistake","meaning":"カテゴリー錯誤","pos":"n","category":"Philosophy of language","priority":4,"definition":"","example":"The concept of category mistake plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"ceteris paribus","meaning":"他の条件が等しければ","pos":"adv","category":"Philosophy of science","priority":4,"definition":"","example":"The two interpretations are ceteris paribus different once the background assumptions are made explicit.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"coextension","meaning":"外延の一致","pos":"n","category":"Logic / language","priority":3,"definition":"","example":"The concept of coextension plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"commensurability","meaning":"通約可能性","pos":"n","category":"Philosophy of science","priority":3,"definition":"","example":"The concept of commensurability plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"compositionality","meaning":"合成性","pos":"n","category":"Philosophy of language","priority":4,"definition":"","example":"The concept of compositionality plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"conceivability","meaning":"想像可能性；思考可能性","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of conceivability plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"conceptual possibility","meaning":"概念的可能性","pos":"n","category":"Metaphysics","priority":3,"definition":"","example":"The concept of conceptual possibility plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"consequentialism","meaning":"帰結主義","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of consequentialism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"constitutivism","meaning":"構成主義；構成的説明の立場","pos":"n","category":"Ethics / action","priority":3,"definition":"","example":"The concept of constitutivism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"contextualism","meaning":"文脈主義","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of contextualism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"conventionalism","meaning":"規約主義","pos":"n","category":"Philosophy core","priority":3,"definition":"","example":"The concept of conventionalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"correspondence theory","meaning":"対応説","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of correspondence theory plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"credal","meaning":"信念度に関する","pos":"adj","category":"Epistemology","priority":3,"definition":"","example":"The paper asks whether the proposed distinction is genuinely credal in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"desire","meaning":"欲求","pos":"n","category":"Action / mind","priority":5,"definition":"","example":"The concept of desire plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"disjunctivism","meaning":"選言主義","pos":"n","category":"Epistemology / mind","priority":4,"definition":"","example":"The concept of disjunctivism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"epistemic luck","meaning":"認識的運","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of epistemic luck plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"epistemic risk","meaning":"認識的リスク","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of epistemic risk plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"epistemic value","meaning":"認識的価値","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of epistemic value plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"evidentialism","meaning":"証拠主義","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of evidentialism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"explanandum","meaning":"被説明項；説明されるべき事柄","pos":"n","category":"Philosophy of science","priority":3,"definition":"","example":"The concept of explanandum plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"explanans","meaning":"説明項；説明する側の事柄","pos":"n","category":"Philosophy of science","priority":3,"definition":"","example":"The concept of explanans plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"expressivism","meaning":"表出主義","pos":"n","category":"Ethics / language","priority":4,"definition":"","example":"The concept of expressivism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"functionalism","meaning":"機能主義","pos":"n","category":"Philosophy of mind","priority":5,"definition":"","example":"The concept of functionalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"Gettier case","meaning":"ゲティア事例","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of Gettier case plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"higher-order evidence","meaning":"高階の証拠","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of higher-order evidence plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"indispensability","meaning":"不可欠性","pos":"n","category":"Philosophy core","priority":3,"definition":"","example":"The concept of indispensability plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"instrumentalism","meaning":"道具主義","pos":"n","category":"Philosophy of science","priority":4,"definition":"","example":"The concept of instrumentalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"intensional","meaning":"内包的な；内包に関する","pos":"adj","category":"Logic / language","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely intensional in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"intension","meaning":"内包","pos":"n","category":"Logic / language","priority":4,"definition":"","example":"The concept of intension plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"intentional stance","meaning":"志向的立場","pos":"n","category":"Philosophy of mind","priority":3,"definition":"","example":"The concept of intentional stance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"knowledge-first epistemology","meaning":"知識第一認識論","pos":"n","category":"Epistemology","priority":4,"definition":"","example":"The concept of knowledge-first epistemology plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"logical consequence","meaning":"論理的帰結","pos":"n","category":"Logic","priority":5,"definition":"","example":"The concept of logical consequence plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"logical possibility","meaning":"論理的可能性","pos":"n","category":"Logic","priority":4,"definition":"","example":"The concept of logical possibility plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"mental causation","meaning":"心的因果","pos":"n","category":"Philosophy of mind","priority":4,"definition":"","example":"The concept of mental causation plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"metaphysical necessity","meaning":"形而上学的必然性","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of metaphysical necessity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"metaphysical possibility","meaning":"形而上学的可能性","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of metaphysical possibility plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"moral luck","meaning":"道徳的運","pos":"n","category":"Ethics","priority":4,"definition":"","example":"The concept of moral luck plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"moral responsibility","meaning":"道徳的責任","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of moral responsibility plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"non-reductive","meaning":"非還元的な","pos":"adj","category":"Metaphysics","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely non-reductive in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"ontological commitment","meaning":"存在論的コミットメント","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of ontological commitment plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"phenomenal consciousness","meaning":"現象的意識","pos":"n","category":"Philosophy of mind","priority":4,"definition":"","example":"The concept of phenomenal consciousness plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"practical reason","meaning":"実践理性；実践的理由","pos":"n","category":"Ethics / action","priority":5,"definition":"","example":"The concept of practical reason plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"primary quality","meaning":"第一性質","pos":"n","category":"Metaphysics","priority":3,"definition":"","example":"The concept of primary quality plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"qualitative identity","meaning":"質的同一性","pos":"n","category":"Metaphysics","priority":3,"definition":"","example":"The concept of qualitative identity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"quantifier","meaning":"量化子","pos":"n","category":"Logic","priority":4,"definition":"","example":"The concept of quantifier plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"reflective equilibrium","meaning":"反省的均衡","pos":"n","category":"Ethics / methodology","priority":5,"definition":"","example":"The concept of reflective equilibrium plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"rule consequentialism","meaning":"規則帰結主義","pos":"n","category":"Ethics","priority":3,"definition":"","example":"The concept of rule consequentialism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"semantic externalism","meaning":"意味論的外在主義","pos":"n","category":"Philosophy of language","priority":4,"definition":"","example":"The concept of semantic externalism plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"sense datum","meaning":"感覚与件","pos":"n","category":"Epistemology","priority":3,"definition":"","example":"The concept of sense datum plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"speech act","meaning":"発話行為","pos":"n","category":"Philosophy of language","priority":5,"definition":"","example":"The concept of speech act plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"state of affairs","meaning":"事態","pos":"n","category":"Metaphysics","priority":4,"definition":"","example":"The concept of state of affairs plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"subjectivity","meaning":"主観性","pos":"n","category":"Phenomenology","priority":5,"definition":"","example":"The concept of subjectivity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"synthetic","meaning":"総合的な","pos":"adj","category":"Philosophy core","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely synthetic in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"theoretical virtue","meaning":"理論的徳","pos":"n","category":"Philosophy of science","priority":4,"definition":"","example":"The concept of theoretical virtue plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"transworld identity","meaning":"可能世界間同一性","pos":"n","category":"Metaphysics","priority":3,"definition":"","example":"The concept of transworld identity plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"virtue epistemology","meaning":"徳認識論","pos":"n","category":"Epistemology","priority":5,"definition":"","example":"The concept of virtue epistemology plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"virtue ethics","meaning":"徳倫理学","pos":"n","category":"Ethics","priority":5,"definition":"","example":"The concept of virtue ethics plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"accessibility relation","meaning":"到達可能性関係","pos":"n","category":"Logic / attention","priority":4,"definition":"","example":"The concept of accessibility relation plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"attendabilia","meaning":"注意可能項；注意を向けうる対象","pos":"n","category":"Attention / epistemology","priority":4,"definition":"","example":"The concept of attendabilia plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"attention","meaning":"注意","pos":"n","category":"Attention / epistemology","priority":5,"definition":"","example":"The concept of attention plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"attentional","meaning":"注意に関する","pos":"adj","category":"Attention / epistemology","priority":4,"definition":"","example":"The paper asks whether the proposed distinction is genuinely attentional in this context.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"attentional pattern","meaning":"注意パターン","pos":"n","category":"Attention / epistemology","priority":4,"definition":"","example":"The concept of attentional pattern plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"salience","meaning":"顕著性","pos":"n","category":"Attention / epistemology","priority":5,"definition":"","example":"The concept of salience plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"salience structure","meaning":"顕著性構造","pos":"n","category":"Attention / epistemology","priority":5,"definition":"","example":"A salience structure shapes what is likely to attract an agent’s attention.","note":"attention/ignorance と接続。","source":"PhiloLex curated philosophy deck"},{"word":"static salience structure","meaning":"静的顕著性構造","pos":"n","category":"Attention / epistemology","priority":4,"definition":"","example":"The concept of static salience structure plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"dynamic salience structure","meaning":"動的顕著性構造","pos":"n","category":"Attention / epistemology","priority":4,"definition":"","example":"The concept of dynamic salience structure plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"relevance","meaning":"関連性","pos":"n","category":"Phenomenology / epistemology","priority":5,"definition":"","example":"The concept of relevance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"relevance structure","meaning":"関連性構造","pos":"n","category":"Phenomenology / epistemology","priority":5,"definition":"","example":"A relevance structure organizes which aspects of a situation matter to an agent.","note":"Schutz 系。","source":"PhiloLex curated philosophy deck"},{"word":"pragmatic relevance","meaning":"実践的関連性","pos":"n","category":"Phenomenology / epistemology","priority":4,"definition":"","example":"The concept of pragmatic relevance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"thematic relevance","meaning":"主題的関連性","pos":"n","category":"Phenomenology / epistemology","priority":4,"definition":"","example":"The concept of thematic relevance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"interpretive relevance","meaning":"解釈上の関連性","pos":"n","category":"Phenomenology / epistemology","priority":3,"definition":"","example":"The concept of interpretive relevance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"motivational relevance","meaning":"動機づけ上の関連性","pos":"n","category":"Phenomenology / epistemology","priority":3,"definition":"","example":"The concept of motivational relevance plays an important role in the author's analysis.","note":"","source":"PhiloLex curated philosophy deck"},{"word":"account for","meaning":"〜を説明する；〜の割合を占める","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"The theory must account for cases in which agents lack explicit beliefs.","note":"「説明する」の意味で頻出。","source":"PhiloLex v1 curated"},{"word":"acknowledge","meaning":"〜を認める","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"The author acknowledges that the objection applies to the simple version of the view.","note":"反論を部分的に認める。","source":"PhiloLex v1 curated"},{"word":"adequate","meaning":"十分な；適切な","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"A satisfactory theory must provide an adequate explanation of the phenomenon.","note":"adequately / inadequacy。","source":"PhiloLex v1 curated"},{"word":"albeit","meaning":"〜ではあるが","pos":"conj.","category":"Academic argumentation","priority":3,"definition":"","example":"The proposal is plausible, albeit incomplete.","note":"although に近い。","source":"PhiloLex v1 curated"},{"word":"ambiguous","meaning":"曖昧な；複数解釈が可能な","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"The claim is ambiguous between an epistemic and a moral reading.","note":"ambiguity も重要。","source":"PhiloLex v1 curated"},{"word":"analogous","meaning":"類似した；類比的な","pos":"adj.","category":"Academic argumentation","priority":3,"definition":"","example":"The structure of this argument is analogous to the earlier case.","note":"be analogous to。","source":"PhiloLex v1 curated"},{"word":"arbitrary","meaning":"恣意的な；十分な根拠のない","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"Without a further principle, the distinction appears arbitrary.","note":"哲学では「原理的根拠を欠く」。","source":"PhiloLex v1 curated"},{"word":"articulate","meaning":"明確に言語化する；詳述する","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The paper articulates a conception of epistemic responsibility.","note":"articulation も重要。","source":"PhiloLex v1 curated"},{"word":"assess","meaning":"評価する","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"We need to assess whether the evidence supports the stronger conclusion.","note":"assessment とセット。","source":"PhiloLex v1 curated"},{"word":"assume","meaning":"〜を仮定する","pos":"v.","category":"Academic argumentation","priority":5,"definition":"","example":"Suppose we assume that all testimony is defeasibly justified.","note":"assumption とセット。","source":"PhiloLex v1 curated"},{"word":"attribute","meaning":"〜に帰属させる","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The view attributes too much cognitive sophistication to ordinary agents.","note":"attribute A to B。","source":"PhiloLex v1 curated"},{"word":"bear on","meaning":"〜に関係する；影響する","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"This empirical result bears directly on the philosophical dispute.","note":"relevant to より硬い。","source":"PhiloLex v1 curated"},{"word":"by virtue of","meaning":"〜であることによって；〜ゆえに","pos":"prep.","category":"Academic argumentation","priority":3,"definition":"","example":"The act is wrong by virtue of the harm it foreseeably causes.","note":"根拠関係を示す。","source":"PhiloLex v1 curated"},{"word":"capture","meaning":"適切に捉える；表現する","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"The proposed definition fails to capture the normative dimension of trust.","note":"学術文脈では「捉える」。","source":"PhiloLex v1 curated"},{"word":"caveat","meaning":"留保；注意事項","pos":"n.","category":"Academic argumentation","priority":2,"definition":"","example":"One caveat is that the argument depends on a narrow notion of evidence.","note":"限定条件を示す。","source":"PhiloLex v1 curated"},{"word":"coherent","meaning":"整合的な；首尾一貫した","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"The account is coherent only if these commitments can be reconciled.","note":"coherence / incoherent。","source":"PhiloLex v1 curated"},{"word":"compelling","meaning":"説得力のある","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"The case provides compelling evidence against the unrestricted principle.","note":"argument/evidence と共起。","source":"PhiloLex v1 curated"},{"word":"concede","meaning":"（反論などを）認める","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"Even if we concede this point, the main argument remains intact.","note":"concession とセット。","source":"PhiloLex v1 curated"},{"word":"constrain","meaning":"制約する","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"Background assumptions constrain which explanations count as plausible.","note":"constraint も頻出。","source":"PhiloLex v1 curated"},{"word":"constitute","meaning":"〜を構成する；〜に当たる","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"These failures constitute a distinctive form of epistemic injustice.","note":"哲学論文で重要。","source":"PhiloLex v1 curated"},{"word":"construe","meaning":"〜と解釈する","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"Autonomy should not be construed as complete independence.","note":"be construed as。","source":"PhiloLex v1 curated"},{"word":"contend","meaning":"〜と主張する","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The author contends that ignorance can be actively produced.","note":"argue より硬い。","source":"PhiloLex v1 curated"},{"word":"crucial","meaning":"決定的に重要な","pos":"adj.","category":"Academic argumentation","priority":5,"definition":"","example":"A crucial distinction is missing from the standard formulation.","note":"論文で高頻度。","source":"PhiloLex v1 curated"},{"word":"deem","meaning":"〜とみなす","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"Cases deemed irrelevant are excluded from the analysis.","note":"be deemed + adj./noun。","source":"PhiloLex v1 curated"},{"word":"delineate","meaning":"境界を明確にする；詳述する","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"The section delineates three distinct senses of objectivity.","note":"概念区分の提示。","source":"PhiloLex v1 curated"},{"word":"derive","meaning":"〜を導出する；〜に由来する","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"The conclusion cannot be derived from the premises without another assumption.","note":"derive A from B。","source":"PhiloLex v1 curated"},{"word":"distinct","meaning":"別個の；明確に異なる","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"These are two distinct objections and should be evaluated separately.","note":"distinct from。","source":"PhiloLex v1 curated"},{"word":"elaborate","meaning":"詳しく説明する","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"The author later elaborates this point by introducing a social model.","note":"elaboration も頻出。","source":"PhiloLex v1 curated"},{"word":"elicit","meaning":"引き出す","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"Thought experiments are often designed to elicit intuitive judgments.","note":"judgment/response を引き出す。","source":"PhiloLex v1 curated"},{"word":"entail","meaning":"〜を含意する；論理的に帰結する","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"Responsibility does not entail conscious awareness of every relevant fact.","note":"論理的含意。","source":"PhiloLex v1 curated"},{"word":"equivalent","meaning":"同値の；同等の","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"The two formulations are not logically equivalent.","note":"equivalence も重要。","source":"PhiloLex v1 curated"},{"word":"exemplify","meaning":"〜を例示する","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"This case exemplifies a broader pattern of structural exclusion.","note":"example の動詞形。","source":"PhiloLex v1 curated"},{"word":"explicate","meaning":"〜を明確に説明する；概念を解明する","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"The article explicates the concept of epistemic dependence.","note":"哲学で特に頻出。","source":"PhiloLex v1 curated"},{"word":"explanatory","meaning":"説明上の；説明力をもつ","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"The account has greater explanatory power than its rival.","note":"explanatory power。","source":"PhiloLex v1 curated"},{"word":"formulate","meaning":"定式化する","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"We can formulate the objection in a stronger way.","note":"formulation とセット。","source":"PhiloLex v1 curated"},{"word":"framework","meaning":"枠組み","pos":"n.","category":"Academic argumentation","priority":5,"definition":"","example":"The analysis is developed within a non-ideal theoretical framework.","note":"theoretical/conceptual framework。","source":"PhiloLex v1 curated"},{"word":"grant","meaning":"（議論のために）〜を認める","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"Grant, for the sake of argument, that the agent had sufficient evidence.","note":"哲学の議論運びで重要。","source":"PhiloLex v1 curated"},{"word":"hinge on","meaning":"〜にかかっている","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The dispute hinges on how we understand relevance.","note":"depend on より論証的。","source":"PhiloLex v1 curated"},{"word":"illuminate","meaning":"〜を明らかにする；理解を深める","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The comparison illuminates an overlooked feature of the debate.","note":"shed light on に近い。","source":"PhiloLex v1 curated"},{"word":"incompatible","meaning":"両立しない","pos":"adj.","category":"Academic argumentation","priority":4,"definition":"","example":"The two principles appear incompatible under conditions of scarcity.","note":"compatible with の反対。","source":"PhiloLex v1 curated"},{"word":"insofar as","meaning":"〜する限りにおいて","pos":"conj.","category":"Academic argumentation","priority":3,"definition":"","example":"The view is plausible insofar as it concerns ordinary perceptual cases.","note":"範囲限定。","source":"PhiloLex v1 curated"},{"word":"instantiate","meaning":"〜を具体例として実現する","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"A particular interaction can instantiate a broader social structure.","note":"property/type の議論。","source":"PhiloLex v1 curated"},{"word":"invoke","meaning":"〜を援用する","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The explanation invokes a distinction between causal and normative dependence.","note":"principle/concept を援用。","source":"PhiloLex v1 curated"},{"word":"maintain","meaning":"〜と主張する；維持する","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"The author maintains that the distinction is normatively significant.","note":"argue/claim の代替。","source":"PhiloLex v1 curated"},{"word":"notwithstanding","meaning":"〜にもかかわらず","pos":"prep./adv.","category":"Academic argumentation","priority":2,"definition":"","example":"Notwithstanding these limitations, the argument has considerable force.","note":"硬い学術文体。","source":"PhiloLex v1 curated"},{"word":"obscure","meaning":"〜を見えにくくする","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The binary distinction obscures important differences among cases.","note":"批判的記述で頻出。","source":"PhiloLex v1 curated"},{"word":"obtain","meaning":"成立する；当てはまる","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"The same relation does not obtain in all social contexts.","note":"哲学ではこの意味が重要。","source":"PhiloLex v1 curated"},{"word":"overlook","meaning":"〜を見落とす","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"Standard accounts often overlook the role of social positioning.","note":"批判の定番語。","source":"PhiloLex v1 curated"},{"word":"plausible","meaning":"もっともらしい；妥当そうな","pos":"adj.","category":"Academic argumentation","priority":5,"definition":"","example":"The proposal is initially plausible but faces a serious counterexample.","note":"哲学論文最重要語の一つ。","source":"PhiloLex v1 curated"},{"word":"prima facie","meaning":"一応は；第一見では","pos":"adv./adj.","category":"Academic argumentation","priority":2,"definition":"","example":"There is a prima facie reason to trust sincere testimony.","note":"哲学・法学で重要。","source":"PhiloLex v1 curated"},{"word":"proponent","meaning":"提唱者；支持者","pos":"n.","category":"Academic argumentation","priority":3,"definition":"","example":"A proponent of the view might respond in two ways.","note":"opponent と対。","source":"PhiloLex v1 curated"},{"word":"qualify","meaning":"〜に限定を加える；修正する","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The claim must be qualified to exclude abnormal cases.","note":"qualification＝留保。","source":"PhiloLex v1 curated"},{"word":"reconcile","meaning":"〜を両立させる","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The theory attempts to reconcile agency with structural explanation.","note":"reconcile A with B。","source":"PhiloLex v1 curated"},{"word":"render","meaning":"〜にする；〜をもたらす","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"This assumption renders the distinction unstable.","note":"render + object + adjective。","source":"PhiloLex v1 curated"},{"word":"robust","meaning":"頑健な；条件変化に耐える","pos":"adj.","category":"Academic argumentation","priority":3,"definition":"","example":"A robust account should survive small variations in the example.","note":"哲学・科学論で高頻度。","source":"PhiloLex v1 curated"},{"word":"salient","meaning":"顕著な；関連上際立つ","pos":"adj.","category":"Academic argumentation","priority":3,"definition":"","example":"Which features become salient depends partly on practical orientation.","note":"salience とセット。","source":"PhiloLex v1 curated"},{"word":"scope","meaning":"適用範囲","pos":"n.","category":"Academic argumentation","priority":4,"definition":"","example":"The scope of the principle is narrower than the author suggests.","note":"scope of a claim/principle。","source":"PhiloLex v1 curated"},{"word":"stipulate","meaning":"〜と取り決める；定義上そう置く","pos":"v.","category":"Academic argumentation","priority":2,"definition":"","example":"Let us stipulate that the term applies only to intentional actions.","note":"思考実験や定義で頻出。","source":"PhiloLex v1 curated"},{"word":"substantive","meaning":"実質的な；内容上の","pos":"adj.","category":"Academic argumentation","priority":3,"definition":"","example":"The disagreement is substantive rather than merely terminological.","note":"substantive disagreement。","source":"PhiloLex v1 curated"},{"word":"sufficient","meaning":"十分な","pos":"adj.","category":"Academic argumentation","priority":5,"definition":"","example":"Possession of evidence is not sufficient for knowledge.","note":"necessary and sufficient。","source":"PhiloLex v1 curated"},{"word":"thereby","meaning":"それによって","pos":"adv.","category":"Academic argumentation","priority":4,"definition":"","example":"The institution restricts participation, thereby reproducing inequalities.","note":"因果・帰結を接続。","source":"PhiloLex v1 curated"},{"word":"undermine","meaning":"〜を弱める；掘り崩す","pos":"v.","category":"Academic argumentation","priority":4,"definition":"","example":"The counterexample undermines the necessity claim.","note":"argument/claim と共起。","source":"PhiloLex v1 curated"},{"word":"whereas","meaning":"〜である一方で","pos":"conj.","category":"Academic argumentation","priority":4,"definition":"","example":"The first account is causal, whereas the second is normative.","note":"比較・対照。","source":"PhiloLex v1 curated"},{"word":"yield","meaning":"〜をもたらす；導く","pos":"v.","category":"Academic argumentation","priority":3,"definition":"","example":"The revised criterion yields a different classification.","note":"result/conclusion を生む。","source":"PhiloLex v1 curated"},{"word":"adverse","meaning":"不利な；有害な","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The policy has adverse effects on marginalized groups.","note":"adverse effect/consequence。","source":"PhiloLex v1 curated"},{"word":"afford","meaning":"〜を与える；可能にする","pos":"v.","category":"Advanced general","priority":3,"definition":"","example":"The distinction affords a clearer way of describing the phenomenon.","note":"can afford とは別用法。","source":"PhiloLex v1 curated"},{"word":"allocate","meaning":"配分する","pos":"v.","category":"Advanced general","priority":3,"definition":"","example":"Institutions allocate epistemic resources unevenly.","note":"resources/responsibility。","source":"PhiloLex v1 curated"},{"word":"apparent","meaning":"見かけ上の；明白な","pos":"adj.","category":"Advanced general","priority":4,"definition":"","example":"The apparent contradiction disappears once the terms are disambiguated.","note":"apparently も高頻度。","source":"PhiloLex v1 curated"},{"word":"approximate","meaning":"近似的な；近づく","pos":"adj./v.","category":"Advanced general","priority":3,"definition":"","example":"The model offers only an approximate representation of actual reasoning.","note":"approximation も重要。","source":"PhiloLex v1 curated"},{"word":"bolster","meaning":"〜を補強する","pos":"v.","category":"Advanced general","priority":2,"definition":"","example":"The additional case bolsters the author’s central claim.","note":"claim/argument を補強。","source":"PhiloLex v1 curated"},{"word":"comprise","meaning":"〜から成る","pos":"v.","category":"Advanced general","priority":3,"definition":"","example":"The corpus comprises articles from several subfields.","note":"consist of に近い。","source":"PhiloLex v1 curated"},{"word":"confer","meaning":"〜を付与する","pos":"v.","category":"Advanced general","priority":2,"definition":"","example":"Social status can confer credibility independently of competence.","note":"confer A on B。","source":"PhiloLex v1 curated"},{"word":"converge","meaning":"収束する；一致する","pos":"v.","category":"Advanced general","priority":3,"definition":"","example":"Different lines of argument converge on the same conclusion.","note":"convergence も重要。","source":"PhiloLex v1 curated"},{"word":"discrepancy","meaning":"食い違い；不一致","pos":"n.","category":"Advanced general","priority":3,"definition":"","example":"There is a discrepancy between the stated norm and actual practice.","note":"between A and B。","source":"PhiloLex v1 curated"},{"word":"disparate","meaning":"異質な；大きく異なる","pos":"adj.","category":"Advanced general","priority":2,"definition":"","example":"The category brings together several disparate phenomena.","note":"diverse より「ばらばら」。","source":"PhiloLex v1 curated"},{"word":"disproportionate","meaning":"不釣り合いな；過度の","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The burden falls disproportionately on marginalized groups.","note":"disproportionately も重要。","source":"PhiloLex v1 curated"},{"word":"elusive","meaning":"捉えにくい","pos":"adj.","category":"Advanced general","priority":2,"definition":"","example":"A precise definition of objectivity remains elusive.","note":"concept/goal と共起。","source":"PhiloLex v1 curated"},{"word":"exacerbate","meaning":"〜を悪化させる","pos":"v.","category":"Advanced general","priority":2,"definition":"","example":"Existing inequalities can exacerbate epistemic vulnerability.","note":"problem/harm を悪化。","source":"PhiloLex v1 curated"},{"word":"exhaustive","meaning":"網羅的な","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The list is illustrative rather than exhaustive.","note":"not exhaustive は定番。","source":"PhiloLex v1 curated"},{"word":"explicit","meaning":"明示的な","pos":"adj.","category":"Advanced general","priority":4,"definition":"","example":"The premise is rarely made explicit in the literature.","note":"implicit と対。","source":"PhiloLex v1 curated"},{"word":"foster","meaning":"促進する；育む","pos":"v.","category":"Advanced general","priority":3,"definition":"","example":"The practice can foster more responsible forms of inquiry.","note":"promote に近い。","source":"PhiloLex v1 curated"},{"word":"inadvertent","meaning":"意図しない","pos":"adj.","category":"Advanced general","priority":2,"definition":"","example":"The exclusion may be inadvertent while still producing serious harm.","note":"意図と結果を分ける。","source":"PhiloLex v1 curated"},{"word":"inherent","meaning":"内在する；本質的に備わる","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"There is nothing inherent in testimony that makes it inferior.","note":"inherent in。","source":"PhiloLex v1 curated"},{"word":"manifest","meaning":"現れる；明白な","pos":"v./adj.","category":"Advanced general","priority":3,"definition":"","example":"The same pattern can manifest in different local practices.","note":"manifestation も重要。","source":"PhiloLex v1 curated"},{"word":"negligible","meaning":"無視できるほど小さい","pos":"adj.","category":"Advanced general","priority":2,"definition":"","example":"The difference is statistically detectable but philosophically negligible.","note":"effect/difference と共起。","source":"PhiloLex v1 curated"},{"word":"nevertheless","meaning":"それにもかかわらず","pos":"adv.","category":"Advanced general","priority":4,"definition":"","example":"The objection is serious; nevertheless, it does not settle the issue.","note":"論証接続。","source":"PhiloLex v1 curated"},{"word":"notably","meaning":"とりわけ；注目すべきことに","pos":"adv.","category":"Advanced general","priority":3,"definition":"","example":"Notably, the author does not appeal to intentional wrongdoing.","note":"文頭で強調。","source":"PhiloLex v1 curated"},{"word":"pervasive","meaning":"広く浸透した；蔓延する","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The analysis concerns pervasive rather than isolated forms of injustice.","note":"bias/power と相性がよい。","source":"PhiloLex v1 curated"},{"word":"preclude","meaning":"〜を不可能にする；妨げる","pos":"v.","category":"Advanced general","priority":2,"definition":"","example":"Social influence does not preclude individual responsibility.","note":"preclude A from B。","source":"PhiloLex v1 curated"},{"word":"prevalent","meaning":"広く見られる","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The assumption remains prevalent in contemporary discussions.","note":"prevalence も重要。","source":"PhiloLex v1 curated"},{"word":"profound","meaning":"深い；重大な","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The shift has profound implications for theories of agency.","note":"profound implication。","source":"PhiloLex v1 curated"},{"word":"purport","meaning":"〜であると称する；〜を意図する","pos":"v.","category":"Advanced general","priority":2,"definition":"","example":"The argument purports to establish a universal conclusion.","note":"purport to do。","source":"PhiloLex v1 curated"},{"word":"recur","meaning":"繰り返し現れる","pos":"v.","category":"Advanced general","priority":3,"definition":"","example":"This difficulty recurs throughout the literature.","note":"recurring theme/problem。","source":"PhiloLex v1 curated"},{"word":"retain","meaning":"保持する","pos":"v.","category":"Advanced general","priority":4,"definition":"","example":"The revised account retains the core insight of the original proposal.","note":"keep の学術語。","source":"PhiloLex v1 curated"},{"word":"rigorous","meaning":"厳密な","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The distinction requires a more rigorous formulation.","note":"rigor/rigorously。","source":"PhiloLex v1 curated"},{"word":"subsequent","meaning":"その後の","pos":"adj.","category":"Advanced general","priority":4,"definition":"","example":"Subsequent work refined the original distinction.","note":"subsequently も。","source":"PhiloLex v1 curated"},{"word":"subtle","meaning":"微妙な；捉えにくい","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The argument depends on a subtle shift in the meaning of agency.","note":"哲学論文で多い。","source":"PhiloLex v1 curated"},{"word":"tacit","meaning":"暗黙の","pos":"adj.","category":"Advanced general","priority":2,"definition":"","example":"The practice rests on tacit assumptions about credibility.","note":"tacit knowledge。","source":"PhiloLex v1 curated"},{"word":"tenable","meaning":"擁護可能な","pos":"adj.","category":"Advanced general","priority":2,"definition":"","example":"The position is no longer tenable once the counterexample is admitted.","note":"position に頻出。","source":"PhiloLex v1 curated"},{"word":"underlying","meaning":"根底にある","pos":"adj.","category":"Advanced general","priority":4,"definition":"","example":"The disagreement reflects different underlying conceptions of normativity.","note":"assumption/structure。","source":"PhiloLex v1 curated"},{"word":"unwarranted","meaning":"正当化されない","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The inference from correlation to causation is unwarranted.","note":"epistemic evaluation。","source":"PhiloLex v1 curated"},{"word":"viable","meaning":"成立しうる；実行可能な","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"Pluralism remains a viable theoretical option.","note":"alternative/account。","source":"PhiloLex v1 curated"},{"word":"vulnerable","meaning":"脆弱な；反論を受けやすい","pos":"adj.","category":"Advanced general","priority":3,"definition":"","example":"The view is vulnerable to a familiar regress objection.","note":"vulnerable to objection。","source":"PhiloLex v1 curated"},{"word":"affordance","meaning":"アフォーダンス；環境が提供する行為可能性","pos":"n.","category":"Critical / feminist philosophy","priority":3,"definition":"","example":"Social environments structure which affordances are visible or available.","note":"phenomenology/cog sci/disability studies。","source":"PhiloLex v1 curated"},{"word":"agnotology","meaning":"無知の研究；無知生成の研究","pos":"n.","category":"Critical / feminist philosophy","priority":2,"definition":"","example":"Agnotology examines how ignorance is produced and maintained.","note":"ignorance studies。","source":"PhiloLex v1 curated"},{"word":"alterity","meaning":"他者性","pos":"n.","category":"Critical / feminist philosophy","priority":2,"definition":"","example":"The account emphasizes alterity rather than assimilation of the other.","note":"continental/critical theory。","source":"PhiloLex v1 curated"},{"word":"complicity","meaning":"共犯性；構造への加担","pos":"n.","category":"Critical / feminist philosophy","priority":3,"definition":"","example":"Ordinary participation can generate complicity in structural injustice.","note":"意図なしの加担も論点。","source":"PhiloLex v1 curated"},{"word":"credibility","meaning":"信頼性評価；信用","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Prejudice can produce systematic credibility deficits.","note":"testimonial injustice。","source":"PhiloLex v1 curated"},{"word":"domination","meaning":"支配","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Republican theories define unfreedom partly in terms of domination.","note":"power と区別されることがある。","source":"PhiloLex v1 curated"},{"word":"embodiment","meaning":"身体性","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Critical phenomenology treats embodiment as socially situated.","note":"embodied / disembodied。","source":"PhiloLex v1 curated"},{"word":"epistemic injustice","meaning":"認識的不正義","pos":"n.","category":"Critical / feminist philosophy","priority":5,"definition":"","example":"Epistemic injustice occurs when people are wronged in their capacity as knowers.","note":"Fricker 以降の中核概念。","source":"PhiloLex v1 curated"},{"word":"epistemic oppression","meaning":"認識的抑圧","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Epistemic oppression concerns persistent constraints on participation in knowledge practices.","note":"Dotson など。","source":"PhiloLex v1 curated"},{"word":"hermeneutical injustice","meaning":"解釈的不正義","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Hermeneutical injustice can arise when shared interpretive resources are inadequate.","note":"Fricker の分類。","source":"PhiloLex v1 curated"},{"word":"ignorance","meaning":"無知","pos":"n.","category":"Critical / feminist philosophy","priority":5,"definition":"","example":"Ignorance can be socially produced rather than merely an absence of knowledge.","note":"epistemology of ignorance。","source":"PhiloLex v1 curated"},{"word":"intersectionality","meaning":"交差性","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Intersectionality analyzes how multiple structures of power jointly shape social positions.","note":"属性の単純加算ではない。","source":"PhiloLex v1 curated"},{"word":"marginalization","meaning":"周縁化","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Marginalization can limit participation and access to interpretive resources.","note":"political/social epistemology。","source":"PhiloLex v1 curated"},{"word":"misfitting","meaning":"ミスフィット；身体と環境の不適合","pos":"n.","category":"Critical / feminist philosophy","priority":2,"definition":"","example":"Misfitting emerges from a relation between embodied difference and environment.","note":"disability studies。","source":"PhiloLex v1 curated"},{"word":"oppression","meaning":"抑圧","pos":"n.","category":"Critical / feminist philosophy","priority":5,"definition":"","example":"Structural accounts emphasize durable relations and institutional patterns of oppression.","note":"critical/feminist philosophy。","source":"PhiloLex v1 curated"},{"word":"power","meaning":"権力；力関係","pos":"n.","category":"Critical / feminist philosophy","priority":5,"definition":"","example":"Epistemic practices are shaped by relations of social power.","note":"能力 power と区別。","source":"PhiloLex v1 curated"},{"word":"recognition","meaning":"承認","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"The theory treats recognition as a social condition of agency.","note":"critical theory。","source":"PhiloLex v1 curated"},{"word":"situatedness","meaning":"位置づけられていること；状況性","pos":"n.","category":"Critical / feminist philosophy","priority":3,"definition":"","example":"Situatedness highlights the epistemic significance of social position.","note":"standpoint theory。","source":"PhiloLex v1 curated"},{"word":"standpoint","meaning":"スタンドポイント；認識論的立場","pos":"n.","category":"Critical / feminist philosophy","priority":5,"definition":"","example":"A standpoint is not simply a perspective but can be a critical achievement.","note":"standpoint theory。","source":"PhiloLex v1 curated"},{"word":"structural injustice","meaning":"構造的不正義","pos":"n.","category":"Critical / feminist philosophy","priority":5,"definition":"","example":"Structural injustice can arise without a single agent intending the outcome.","note":"Young 系。","source":"PhiloLex v1 curated"},{"word":"structural oppression","meaning":"構造的抑圧","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Structural oppression is reproduced through institutions, norms, and practices.","note":"個別行為に還元しない。","source":"PhiloLex v1 curated"},{"word":"testimonial injustice","meaning":"証言的不正義","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Testimonial injustice occurs when prejudice causes a credibility deficit.","note":"credibility deficit が鍵。","source":"PhiloLex v1 curated"},{"word":"trustworthiness","meaning":"信頼に値すること","pos":"n.","category":"Critical / feminist philosophy","priority":3,"definition":"","example":"Trustworthiness is not exhausted by predictive reliability.","note":"trust と reliability の区別。","source":"PhiloLex v1 curated"},{"word":"vulnerability","meaning":"脆弱性","pos":"n.","category":"Critical / feminist philosophy","priority":4,"definition":"","example":"Epistemic vulnerability can be distributed unevenly by institutions.","note":"vulnerable の名詞。","source":"PhiloLex v1 curated"},{"word":"abstract","meaning":"要旨","pos":"n.","category":"Paper structure","priority":5,"definition":"","example":"The abstract states the research question and main conclusion.","note":"論文冒頭。","source":"PhiloLex v1 curated"},{"word":"claim","meaning":"主張","pos":"n.","category":"Paper structure","priority":5,"definition":"","example":"The central claim is narrower than the title suggests.","note":"主張単位を追う基本語。","source":"PhiloLex v1 curated"},{"word":"conclusion","meaning":"結論","pos":"n.","category":"Paper structure","priority":5,"definition":"","example":"The conclusion follows only if the second premise is accepted.","note":"argument の終点。","source":"PhiloLex v1 curated"},{"word":"literature","meaning":"先行研究；文献群","pos":"n.","category":"Paper structure","priority":5,"definition":"","example":"The recent literature has shifted toward structural explanations.","note":"研究文献の意味。","source":"PhiloLex v1 curated"},{"word":"objection","meaning":"反論","pos":"n.","category":"Paper structure","priority":5,"definition":"","example":"The strongest objection targets the necessity of the third condition.","note":"response/reply とセット。","source":"PhiloLex v1 curated"},{"word":"qualification","meaning":"限定；留保","pos":"n.","category":"Paper structure","priority":4,"definition":"","example":"The author adds an important qualification to the thesis.","note":"適用範囲を狭める。","source":"PhiloLex v1 curated"},{"word":"rejoinder","meaning":"再応答；反論への返答","pos":"n.","category":"Paper structure","priority":3,"definition":"","example":"The final section offers a rejoinder to the objection.","note":"reply より硬い。","source":"PhiloLex v1 curated"},{"word":"thesis","meaning":"中心命題；論旨","pos":"n.","category":"Paper structure","priority":5,"definition":"","example":"The paper defends the thesis that ignorance can be structurally produced.","note":"学位論文の意味もある。","source":"PhiloLex v1 curated"},{"word":"upshot","meaning":"結局の帰結；要点","pos":"n.","category":"Paper structure","priority":3,"definition":"","example":"The upshot is that neither account is sufficient on its own.","note":"哲学論文で頻出。","source":"PhiloLex v1 curated"}];
+const NAWL_URL = "https://raw.githubusercontent.com/koba-ninkigumi/ngsl/master/NAWL-1.0_en_ja.csv";
+const NGSL_URL = "https://raw.githubusercontent.com/koba-ninkigumi/ngsl/master/NGSL-1.01_en_ja.csv";
+const TARGET = 1500;
+const DECK_KEY = "philolex_focus_deck_v2";
+const STATE_KEY = "philolex_focus_state_v2";
+const META_KEY = "philolex_focus_meta_v2";
+const SETTINGS_KEY = "philolex_focus_settings_v2";
+
+const $ = id => document.getElementById(id);
+const now = () => Date.now();
+const DAY = 86400000;
+const HOUR = 3600000;
+
+let deck = [];
+let state = JSON.parse(localStorage.getItem(STATE_KEY)||"{}");
+let meta = JSON.parse(localStorage.getItem(META_KEY)||'{"xp":0,"coins":0,"bestCombo":0,"sessions":0}');
+let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}");
+
+let session = null;
+let current = null;
+let flipped = false;
+let timerHandle = null;
+
+function csvParse(text){
+  const rows=[]; let row=[], cell="", q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(ch=='"'){
+      if(q && text[i+1]=='"'){cell+='"';i++} else q=!q;
+    } else if(ch==',' && !q){row.push(cell);cell="";}
+    else if((ch=='\n'||ch=='\r') && !q){
+      if(ch=='\r'&&text[i+1]=='\n')i++;
+      row.push(cell);cell="";
+      if(row.some(x=>x!=="")) rows.push(row);
+      row=[];
+    } else cell+=ch;
+  }
+  if(cell||row.length){row.push(cell);rows.push(row)}
+  return rows;
+}
+function clean(s){return String(s??"").trim()}
+function esc(s){return clean(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function normalizePos(p){
+  p=clean(p).toLowerCase();
+  if(p.includes("verb")) return "v.";
+  if(p.includes("adj")) return "adj.";
+  if(p.includes("adv")) return "adv.";
+  if(p.includes("noun")||p==="n"||p.includes("n pl")) return "n.";
+  if(p.includes("conj")) return "conj.";
+  if(p.includes("prep")) return "prep.";
+  return p || "";
+}
+function generatedExample(word,pos){
+  const p=normalizePos(pos);
+  if(p==="n.") return `The concept of ${word} plays an important role in the author's analysis.`;
+  if(p==="adj.") return `The paper asks whether this characterization is genuinely ${word} in the relevant context.`;
+  if(p==="adv.") return `The authors ${word} distinguish the two interpretations of the claim.`;
+  if(p==="v.") return `The paper uses this expression to ${word} a relation that matters to the argument.`;
+  return `The expression “${word}” occurs in the discussion of the paper's central argument.`;
+}
+function categoryForNawl(word,def,pos){
+  const s=(word+" "+def).toLowerCase();
+  if(/language|word|speech|lingu|semantic|syntax|grammat|utterance|discourse|rhetoric/.test(s)) return "Academic: language";
+  if(/social|society|politic|ethic|mor|ideolog|inequal|authority|prejudice|discrimination|capitalis|colonial|domination/.test(s)) return "Academic: social / humanities";
+  if(/statistic|variable|correlation|regression|quantit|qualitat|method|valid|reliab|sample|data|empirical/.test(s)) return "Academic: method / analysis";
+  if(/theor|concept|rational|logic|philos|proposition|inference|argument|justif|contradict|paradox|axiom|realism/.test(s)) return "Academic: theory / argument";
+  return "Academic vocabulary";
+}
+function academicUtility(word,pos,rank){
+  let score=0;
+  const w=word.toLowerCase();
+  const p=normalizePos(pos);
+  if(["n.","v.","adj.","adv.","conj.","prep."].includes(p)) score+=3;
+  if(w.length>=6) score+=2;
+  if(rank>=700) score+=1;
+  if(rank>=1000) score+=1;
+  if(rank>2200) score-=2;
+  const boost = new Set(["establish","determine","occur","significant","review","depend","recognize","purpose","argue","achieve","prove","method","analysis","discussion","challenge","statement","despite","seek","specific","access","identify","potential","relation","strategy","tend","associate","instance","refer","assume","doubt","theory","propose","reference","argument","document","pattern","obviously","unclear","separate","central","throughout","resource","basis","author","reflect","previous","define","conclusion","professional","debate","maintain","prefer","possibility","variety","responsibility","original","agency","legal","proposal","version","communication","estimate","difficulty"]);
+  if(boost.has(w)) score+=8;
+  const everyday = /^(hotel|movie|bus|fish|baby|sing|dog|dress|hair|restaurant|garden|yeah|smile|rock|dream|apple|bucket|airplane|shirt|kitchen|coffee|football|baseball|beer|shoe|bedroom)$/;
+  if(everyday.test(w)) score-=10;
+  return score;
+}
+async function buildDeck(){
+  const cache = localStorage.getItem(DECK_KEY);
+  if(cache){
+    try{
+      const parsed=JSON.parse(cache);
+      if(Array.isArray(parsed)&&parsed.length===TARGET){ deck=parsed; return {cached:true}; }
+    }catch(e){}
+  }
+  $("deckStatus").textContent="初回語彙データを構築中：学術語彙 → 哲学専門語彙 → 一般上級語彙の順に統合しています…";
+  const [nawlText,ngslText]=await Promise.all([
+    fetch(NAWL_URL).then(r=>{if(!r.ok)throw new Error("NAWL");return r.text()}),
+    fetch(NGSL_URL).then(r=>{if(!r.ok)throw new Error("NGSL");return r.text()})
+  ]);
+  const map=new Map();
+  function put(c,prefer=false){
+    const k=c.word.toLowerCase().trim();
+    if(!k)return;
+    if(!map.has(k)||prefer) map.set(k,c);
+  }
+  EMBEDDED.forEach(c=>put({...c,priority:+c.priority||4},true));
+
+  const nr=csvParse(nawlText);
+  for(let i=1;i<nr.length;i++){
+    const r=nr[i]; if(r.length<4)continue;
+    const word=clean(r[0]), def=clean(r[1]), pos=clean(r[2]), meaning=clean(r.slice(3).join(","));
+    if(!word||!meaning)continue;
+    put({
+      word,meaning,pos:normalizePos(pos),definition:def,
+      category:categoryForNawl(word,def,pos),priority:4,
+      example:generatedExample(word,pos),note:"",source:"NAWL"
+    });
+  }
+
+  // Fill to exactly 1500 with mid/high-frequency general vocabulary useful for academic reading.
+  const gr=csvParse(ngslText), candidates=[];
+  for(let i=1;i<gr.length;i++){
+    const r=gr[i]; if(r.length<5)continue;
+    const rank=+r[0],word=clean(r[1]),pos=clean(r[2]),def=clean(r[3]),meaning=clean(r.slice(4).join(","));
+    if(!word||!meaning||rank<650||rank>2300||map.has(word.toLowerCase()))continue;
+    const score=academicUtility(word,pos,rank);
+    if(score<3)continue;
+    candidates.push({rank,score,word,meaning,pos:normalizePos(pos),definition:def,
+      category:"General advanced reading",priority:3,example:generatedExample(word,pos),note:"",source:"NGSL"});
+  }
+  candidates.sort((a,b)=>b.score-a.score || a.rank-b.rank);
+  for(const c of candidates){ if(map.size>=TARGET)break; put(c); }
+
+  // In the unlikely event filtering leaves fewer than 1500, relax it while keeping ranks above basic core vocabulary.
+  if(map.size<TARGET){
+    for(let i=1;i<gr.length && map.size<TARGET;i++){
+      const r=gr[i]; if(r.length<5)continue;
+      const rank=+r[0],word=clean(r[1]),pos=clean(r[2]),def=clean(r[3]),meaning=clean(r.slice(4).join(","));
+      if(!word||!meaning||rank<900||rank>2600||map.has(word.toLowerCase()))continue;
+      put({word,meaning,pos:normalizePos(pos),definition:def,category:"General advanced reading",priority:2,
+        example:generatedExample(word,pos),note:"",source:"NGSL",rank});
+    }
+  }
+  deck=[...map.values()].slice(0,TARGET).map((c,i)=>({...c,id:i+1}));
+  localStorage.setItem(DECK_KEY,JSON.stringify(deck));
+  return {cached:false};
+}
+function sFor(c){
+  const k=String(c.id);
+  return state[k] || {seen:0,mastery:0,stability:.15,difficulty:5,due:0,lapses:0,last:"new",streak:0,lastAt:0};
+}
+function saveState(){localStorage.setItem(STATE_KEY,JSON.stringify(state));localStorage.setItem(META_KEY,JSON.stringify(meta))}
+function saveSettings(){
+  const obj={};
+  ["mode","sessionSize","sprint","stim","sound","category","newRatio","flipMode"].forEach(id=>obj[id]=$(id).value);
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(obj));
+}
+function loadSettings(){
+  Object.entries(settings).forEach(([k,v])=>{if($(k))$(k).value=v});
+}
+function levelInfo(xp){
+  const level=Math.floor(Math.sqrt(xp/90))+1;
+  const prev=90*(level-1)*(level-1), next=90*level*level;
+  const titles=["Boiler Hand","Copper Reader","Valve Tuner","Signal Analyst","Gear Dialectician","Aether Surveyor","Clockwork Metaphysician","Neon Critic","Steam Philosopher","Grand Artificer"];
+  return {level,prev,next,title:titles[Math.min(titles.length-1,Math.floor((level-1)/2))]};
+}
+function renderDashboard(){
+  const li=levelInfo(meta.xp||0), mastered=deck.filter(c=>sFor(c).mastery>=80).length;
+  $("level").textContent="Lv."+li.level;$("title").textContent=li.title;
+  $("xp").textContent=(meta.xp||0).toLocaleString()+" AXP";$("coins").textContent=(meta.coins||0).toLocaleString()+" ⚙";
+  $("mastered").textContent=mastered;
+  $("xpbar").style.width=Math.max(0,Math.min(100,(meta.xp-li.prev)/(li.next-li.prev)*100))+"%";
+  $("xpNext").textContent=(li.next-meta.xp)+" XP";
+}
+function populateCategories(){
+  const sel=$("category"), current=sel.value;
+  const cats=["all",...new Set(deck.map(c=>c.category).filter(Boolean))].sort((a,b)=>a==="all"?-1:a.localeCompare(b));
+  sel.innerHTML=cats.map(c=>`<option value="${esc(c)}">${c==="all"?"すべて":esc(c)}</option>`).join("");
+  if(cats.includes(current))sel.value=current;
+}
+function weakness(c){
+  const s=sFor(c), t=now();
+  let score=(100-s.mastery)*.65+s.lapses*15+(c.priority||3)*5;
+  if(s.last==="again")score+=32;if(s.last==="fuzzy")score+=22;
+  if(s.due && t>s.due)score+=Math.min(35,(t-s.due)/HOUR*1.2);
+  if(s.seen===0)score-=25;
+  if(s.lastAt)score+=Math.min(15,(t-s.lastAt)/DAY*2);
+  return score;
+}
+function eligibleDeck(){
+  const cat=$("category").value;
+  return cat==="all"?deck:deck.filter(c=>c.category===cat);
+}
+function chooseSession(n,modeOverride=null){
+  const mode=modeOverride||$("mode").value,t=now(),pool=eligibleDeck();
+  const due=pool.filter(c=>{const s=sFor(c);return s.seen>0 && s.due<=t}).sort((a,b)=>weakness(b)-weakness(a));
+  const weak=pool.filter(c=>{const s=sFor(c);return s.seen>0 && (s.mastery<65||s.last==="fuzzy"||s.last==="again")}).sort((a,b)=>weakness(b)-weakness(a));
+  const fresh=pool.filter(c=>sFor(c).seen===0).sort((a,b)=>(b.priority||3)-(a.priority||3)||a.id-b.id);
+  let chosen=[];
+  const add=c=>{if(c && !chosen.some(x=>x.id===c.id))chosen.push(c)};
+  if(mode==="due"){due.slice(0,n).forEach(add)}
+  else if(mode==="weak"){weak.slice(0,n).forEach(add)}
+  else if(mode==="new"){fresh.slice(0,n).forEach(add)}
+  else{
+    const newN=Math.max(1,Math.round(n*parseFloat($("newRatio").value||".2")));
+    const reviewN=n-newN;
+    const review=[...new Map([...due,...weak].map(c=>[c.id,c])).values()].sort((a,b)=>weakness(b)-weakness(a));
+    review.slice(0,reviewN).forEach(add);
+    fresh.slice(0,newN).forEach(add);
+    if(chosen.length<n)[...review.slice(reviewN),...fresh.slice(newN),...pool.sort((a,b)=>weakness(b)-weakness(a))].forEach(c=>{if(chosen.length<n)add(c)});
+  }
+  // light interleaving to avoid category clumps
+  const out=[]; let lastCat=null;
+  while(chosen.length){
+    let ix=chosen.findIndex(c=>c.category!==lastCat);
+    if(ix<0)ix=0;
+    const c=chosen.splice(ix,1)[0];out.push(c);lastCat=c.category;
+  }
+  return out.slice(0,n);
+}
+function startSession(sizeOverride=null,modeOverride=null){
+  saveSettings();
+  const n=+(sizeOverride||$("sessionSize").value||10);
+  const q=chooseSession(n,modeOverride);
+  if(!q.length){toast("この条件では蒸気工房から出題できるカードがありません");return}
+  session={queue:q,initial:q.length,index:0,answered:0,good:0,xp:0,coins:0,combo:0,fever:0,start:now(),seconds:+$("sprint").value*60,bossEvery:10};
+  $("dashboard").style.display="none";$("complete").style.display="none";$("study").style.display="block";
+  document.body.classList.toggle("max-stim",$("stim").value==="max");
+  nextCard();
+  runTimer();
+}
+function runTimer(){
+  clearInterval(timerHandle);
+  if(!session.seconds){$("timer").textContent="∞";return}
+  const deadline=now()+session.seconds*1000;
+  const tick=()=>{
+    const left=Math.max(0,Math.ceil((deadline-now())/1000));
+    $("timer").textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
+    if(left<=0){clearInterval(timerHandle);toast("蒸気スプリント終了。今のカードで区切れます");}
+  };tick();timerHandle=setInterval(tick,500);
+}
+function nextCard(){
+  if(session.index>=session.queue.length){finishSession();return}
+  current=session.queue[session.index];flipped=false;
+  renderCard();
+  if($("flipMode").value==="auto")setTimeout(()=>{if(current===session.queue[session.index]&&!flipped){flipped=true;$("card").classList.add("flip")}},1300);
+}
+function renderCard(){
+  const s=sFor(current), isBoss=((session.answered+1)%session.bossEvery===0)||weakness(current)>100;
+  $("card").classList.remove("flip");
+  $("front").innerHTML=`${isBoss?'<div class="boss">PRIME GEAR ×3</div>':""}<span class="category">${esc(current.category)}</span><div class="word">${esc(current.word)}</div><div class="pos">${esc(current.pos)}</div><div class="reveal-hint">タップ / Space で裏返す</div>`;
+  $("back").innerHTML=`${isBoss?'<div class="boss">PRIME GEAR ×3</div>':""}<span class="category">${esc(current.category)}</span><div class="word" style="font-size:31px">${esc(current.word)}</div><div class="meaning">${esc(current.meaning)}</div>${current.definition?`<div class="label">English definition</div><div class="definition">${esc(current.definition)}</div>`:""}<div class="label">Example</div><div class="example">${esc(current.example)}</div>${current.note?`<div class="label">Reading note</div><div class="note">${esc(current.note)}</div>`:""}<div class="reveal-hint">定着度 ${Math.round(s.mastery)} / 100 ・ 失念 ${s.lapses}回</div>`;
+  $("counter").textContent=(session.answered+1)+" / "+session.initial;
+  $("sessionProgress").style.width=Math.min(100,session.answered/session.initial*100)+"%";
+  $("combo").textContent="CHAIN "+session.combo;
+  $("fever").textContent=session.fever>0?"OVERDRIVE ×2":"";
+  $("fever").className=session.fever>0?"fever":"";
+  $("sessionXp").textContent="+"+session.xp+" XP";
+  $("weakLabel").textContent=s.last==="again"?"COLD":s.last==="fuzzy"?"STEAM":s.seen===0?"FRESH":"AUTO";
+}
+function rate(kind){
+  if(!current||!session)return;
+  const boss=((session.answered+1)%session.bossEvery===0)||weakness(current)>100;
+  const s=sFor(current), oldLevel=levelInfo(meta.xp).level;
+  let base=0,coin=0,reinsert=null,masteryDelta=0,stabilityMult=1,days=0;
+  if(kind==="again"){base=2;coin=0;session.combo=0;s.lapses++;s.streak=0;masteryDelta=-16;stabilityMult=.55;days=0;reinsert=2;}
+  if(kind==="fuzzy"){base=8;coin=1;session.combo=Math.max(0,session.combo-1);s.streak=0;masteryDelta=5;stabilityMult=.9;days=.25;reinsert=5;}
+  if(kind==="good"){base=15;coin=2;session.combo++;s.streak++;masteryDelta=13;stabilityMult=1.65;days=Math.max(1,s.stability*1.8);}
+  if(kind==="easy"){base=24;coin=3;session.combo++;s.streak++;masteryDelta=20;stabilityMult=2.35;days=Math.max(3,s.stability*3.2);}
+  if(session.combo>=5 && session.fever<=0)session.fever=3;
+  const feverMult=session.fever>0?2:1, bossMult=boss?3:1, comboMult=1+Math.min(1.5,session.combo*.08);
+  const gained=Math.round(base*feverMult*bossMult*comboMult);
+  const ccoin=Math.round(coin*feverMult*bossMult);
+  session.xp+=gained;session.coins+=ccoin;meta.xp+=gained;meta.coins+=ccoin;
+  meta.bestCombo=Math.max(meta.bestCombo||0,session.combo);
+  s.seen++;s.last=kind;s.lastAt=now();s.mastery=Math.max(0,Math.min(100,(s.mastery||0)+masteryDelta));
+  s.stability=Math.max(.12,Math.min(180,(s.stability||.15)*stabilityMult + (kind==="good"?0.6:kind==="easy"?1.4:0)));
+  s.difficulty=Math.max(1,Math.min(10,(s.difficulty||5)+(kind==="again"?1:kind==="fuzzy"?.35:kind==="easy"?-.4:-.15)));
+  s.due=kind==="again"?now()+5*60*1000:now()+days*DAY;
+  state[String(current.id)]=s;
+  if(kind==="good"||kind==="easy")session.good++;
+  session.answered++;
+  if(session.fever>0 && (kind==="good"||kind==="easy"))session.fever--;
+  if(reinsert!==null && session.answered<session.initial){
+    const at=Math.min(session.queue.length,session.index+reinsert+1);
+    if(!session.queue.slice(session.index+1).some(c=>c.id===current.id))session.queue.splice(at,0,current);
+  }
+  // Variable reward: small, non-punitive insight drop.
+  if((kind==="good"||kind==="easy") && Math.random()<.14){
+    const drop=[5,8,12,20,35][Math.floor(Math.random()*5)];
+    meta.coins+=drop;session.coins+=drop;
+    rewardFX("AETHER CACHE +"+drop+"⚙",true);
+  }else rewardFX("+"+gained+" AXP"+(ccoin?`  +${ccoin}⚙`:""),kind==="easy"||boss);
+  if(session.answered%5===0){
+    const chest=5+Math.floor(Math.random()*16);
+    meta.coins+=chest;session.coins+=chest;
+    setTimeout(()=>rewardFX("GEAR CRATE +"+chest+"⚙",true),260);
+  }
+  saveState();
+  const newLevel=levelInfo(meta.xp).level;
+  if(newLevel>oldLevel)setTimeout(()=>{rewardFX("STEAM RANK UP! Lv."+newLevel,true);soundFX("level");confetti(42)},430);
+  session.index++;
+  setTimeout(()=>nextCard(),$("stim").value==="off"?40:210);
+}
+function rewardFX(text,big=false){
+  if($("stim").value==="off")return;
+  const el=document.createElement("div");el.className="float-reward";el.textContent=text;
+  el.style.left="50%";el.style.top=big?"45%":"58%";el.style.color=big?"#ffd166":"#77f0c9";
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1000);
+  if(big||$("stim").value==="max"){const f=document.createElement("div");f.className="flash";document.body.appendChild(f);setTimeout(()=>f.remove(),500)}
+  if(big)confetti($("stim").value==="max"?45:22);
+  soundFX(big?"big":"ok");
+  if(navigator.vibrate && $("stim").value==="max")navigator.vibrate(big?[18,35,18]:12);
+}
+function confetti(n=24){
+  if($("stim").value==="off")return;
+  const colors=["#8b7cff","#35d0ba","#ffd166","#ff6685","#f4f6fb"];
+  for(let i=0;i<n;i++){
+    const p=document.createElement("i");p.className="particle";
+    p.style.left=(45+Math.random()*10)+"vw";p.style.top=(40+Math.random()*8)+"vh";
+    p.style.background=colors[i%colors.length];
+    p.style.setProperty("--dx",((Math.random()-.5)*480)+"px");
+    p.style.setProperty("--dy",(180+Math.random()*420)+"px");
+    p.style.setProperty("--rot",(Math.random()*900-450)+"deg");
+    document.body.appendChild(p);setTimeout(()=>p.remove(),1300);
+  }
+}
+function soundFX(type){
+  if($("sound").value!=="on"||$("stim").value==="off")return;
+  try{
+    const A=window.AudioContext||window.webkitAudioContext,ctx=new A(),o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    const t=ctx.currentTime;
+    if(type==="level"){o.frequency.setValueAtTime(440,t);o.frequency.exponentialRampToValueAtTime(920,t+.22)}
+    else if(type==="big"){o.frequency.setValueAtTime(520,t);o.frequency.exponentialRampToValueAtTime(790,t+.12)}
+    else{o.frequency.setValueAtTime(420,t);o.frequency.exponentialRampToValueAtTime(560,t+.08)}
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.07,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+.23);
+    o.start(t);o.stop(t+.24);setTimeout(()=>ctx.close(),350);
+  }catch(e){}
+}
+function finishSession(){
+  clearInterval(timerHandle);
+  $("study").style.display="none";$("complete").style.display="block";
+  meta.sessions=(meta.sessions||0)+1;saveState();
+  const rate=session.answered?Math.round(session.good/session.answered*100):0;
+  $("sumXp").textContent="+"+session.xp;$("sumCoins").textContent="+"+session.coins+"⚙";$("sumRemember").textContent=rate+"%";
+  $("clearMsg").textContent=session.combo>=5?"高圧セッション完了。弱点カードは次回の自動整備ルートに戻ります。":"整備完了。忘れた語・うろ覚え語は次回の自動整備で優先回収します。";
+  confetti($("stim").value==="max"?85:45);soundFX("level");
+  renderDashboard();
+}
+function toast(msg){
+  const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);
+}
+$("card").onclick=()=>{flipped=!flipped;$("card").classList.toggle("flip",flipped)};
+document.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>rate(b.dataset.rate));
+$("startBtn").onclick=()=>startSession();
+$("fiveMore").onclick=()=>{ $("complete").style.display="none"; startSession(5,"auto") };
+$("backHome").onclick=()=>{$("complete").style.display="none";$("dashboard").style.display="block";renderDashboard()};
+["mode","sessionSize","sprint","stim","sound","category","newRatio","flipMode"].forEach(id=>$(id).onchange=()=>{saveSettings();document.body.classList.toggle("max-stim",$("stim").value==="max")});
+document.addEventListener("keydown",e=>{
+  if($("study").style.display!=="block")return;
+  if(e.code==="Space"){e.preventDefault();flipped=!flipped;$("card").classList.toggle("flip",flipped)}
+  if(flipped&&["1","2","3","4"].includes(e.key)){rate(["again","fuzzy","good","easy"][+e.key-1])}
+});
+
+
+// iPhone/PWA helpers
+$("quickStart").onclick=()=>{
+  $("mode").value="auto";
+  $("sessionSize").value="10";
+  $("sprint").value="5";
+  $("stim").value="max";
+  $("sound").value="on";
+  $("newRatio").value=".2";
+  saveSettings();
+  startSession(10,"auto");
+};
+$("iosHome").onclick=()=>{
+  if(confirm("このセッションを終了して工房へ戻る戻りますか？")){
+    clearInterval(timerHandle);
+    session=null; current=null;
+    $("study").style.display="none";
+    $("complete").style.display="none";
+    $("dashboard").style.display="block";
+    renderDashboard();
+  }
+};
+(function(){
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(standalone) $("iosInstall").style.display="none";
+  else if(!isIOS) $("iosInstall").innerHTML="<b>iPhone版PWA。</b> iPhoneのSafariで開き、共有 →「ホーム画面に追加」でインストールできます。";
+  if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  }
+})();
+
+(async function init(){
+  loadSettings();
+  try{
+    const res=await buildDeck();
+    $("deckPill").textContent=deck.length+"語";
+    $("startBtn").disabled=false;$("startBtn").textContent="工房設定で開始";$("quickStart").disabled=false;
+    $("deckStatus").textContent=(res.cached?"1500語を端末キャッシュから読み込みました。":"1500語の初期デッキを構築し、端末に保存しました。")+" 「お任せ」は冷えた語・蒸気の甘い語・期限超過語を優先し、必要量だけ新規語を混ぜます。";
+    populateCategories();renderDashboard();
+  }catch(err){
+    // Offline fallback: the curated embedded philosophy deck still works.
+    deck=EMBEDDED.map((c,i)=>({...c,id:i+1}));
+    $("deckPill").textContent=deck.length+"語（オフライン）";
+    $("startBtn").disabled=false;$("startBtn").textContent="工房設定で開始";$("quickStart").disabled=false;
+    $("deckStatus").textContent="初回オンライン語彙データの取得に失敗しました。現在は内蔵の哲学語彙で利用できます。ネット接続時にページを再読み込みすると1500語を構築します。";
+    populateCategories();renderDashboard();
+  }
+})();
+</script>
+</body>
+</html>

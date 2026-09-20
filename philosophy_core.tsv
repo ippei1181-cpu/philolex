@@ -1,0 +1,244 @@
+word	meaning	pos	category	priority
+abduction	アブダクション；最良説明への推論	n	Philosophy core	5
+a priori	ア・プリオリな；経験に依存せずに	adj	Philosophy core	5
+a posteriori	ア・ポステリオリな；経験に基づく	adj	Philosophy core	5
+actualism	現実主義；可能世界論における現実主義	n	Metaphysics	4
+agency	行為者性；行為能力	n	Philosophy core	5
+agent	行為者；主体	n	Philosophy core	5
+alethic	真理に関する；真理様相の	adj	Logic / metaphysics	4
+analytic	分析的な；分析哲学の	adj	Philosophy core	5
+analyticity	分析性	n	Philosophy core	4
+anti-realism	反実在論	n	Metaphysics	5
+appearance	現れ；見かけ	n	Phenomenology	4
+argument	論証；議論	n	Argumentation	5
+argumentative	論証的な；議論に関する	adj	Argumentation	4
+assertion	主張；断言	n	Philosophy core	5
+attitude	態度；命題的態度	n	Philosophy core	4
+attribution	帰属；属性付与	n	Philosophy core	4
+autonomy	自律	n	Ethics / social philosophy	5
+axiology	価値論	n	Ethics	4
+axiom	公理	n	Logic	4
+basic belief	基礎的信念	n	Epistemology	4
+belief	信念	n	Epistemology	5
+belief revision	信念改訂	n	Epistemology	4
+causal	因果的な	adj	Philosophy of science	5
+causation	因果；因果関係	n	Metaphysics	5
+cause	原因；原因となるもの	n	Metaphysics	5
+coherentism	整合説；整合主義	n	Epistemology	4
+compatibilism	両立論	n	Action / free will	4
+concept	概念	n	Philosophy core	5
+conceptual analysis	概念分析	n	Philosophy core	5
+conceptual engineering	概念工学	n	Philosophy of language	4
+conceptual scheme	概念枠組み	n	Philosophy core	4
+condition	条件	n	Philosophy core	5
+constitutive	構成的な	adj	Philosophy core	5
+contingency	偶然性；非必然性	n	Metaphysics	5
+contingent	偶然的な；必然ではない	adj	Metaphysics	5
+contradiction	矛盾	n	Logic	5
+contradictory	矛盾した	adj	Logic	4
+contrary	反対の；反対命題	adj	Logic	3
+counterexample	反例	n	Argumentation	5
+counterfactual	反事実的な；反事実条件文	adj	Metaphysics	5
+credence	信念度；確信度	n	Epistemology	4
+criterion	基準	n	Philosophy core	5
+deduction	演繹	n	Logic	5
+deductive	演繹的な	adj	Logic	5
+defeasibility	取消可能性；反証可能性	n	Epistemology	4
+defeasible	追加情報により覆りうる	adj	Epistemology	5
+defeater	正当化を打ち消す要因	n	Epistemology	5
+definition	定義	n	Philosophy core	5
+deontic	義務・許可に関する	adj	Ethics / logic	4
+deontology	義務論	n	Ethics	5
+descriptive	記述的な	adj	Philosophy core	5
+determinism	決定論	n	Action / free will	5
+dialectic	議論の応酬；弁証法	n	Argumentation	5
+disposition	傾向性；性向	n	Metaphysics	4
+dispositional	傾向性的な	adj	Metaphysics	4
+doxastic	信念に関する	adj	Epistemology	5
+dualism	二元論	n	Philosophy of mind	5
+duty	義務	n	Ethics	5
+emergence	創発	n	Metaphysics	4
+emergent	創発的な	adj	Metaphysics	4
+empirical	経験的な；実証的な	adj	Philosophy of science	5
+empiricism	経験論	n	Epistemology	5
+entailment	含意関係；論理的帰結	n	Logic	5
+epistemic	認識的な	adj	Epistemology	5
+epistemology	認識論	n	Epistemology	5
+essence	本質	n	Metaphysics	5
+essential	本質的な；必然的な	adj	Metaphysics	5
+essentialism	本質主義	n	Metaphysics	5
+ethics	倫理学	n	Ethics	5
+externalism	外在主義	n	Epistemology	5
+facticity	事実性；与えられた状況性	n	Phenomenology	4
+fallacy	誤謬	n	Logic / argumentation	5
+fallibilism	可謬主義	n	Epistemology	4
+free will	自由意志	n	Action / free will	5
+foundationalism	基礎づけ主義	n	Epistemology	5
+ground	根拠；基礎づける	v	Metaphysics	5
+grounding	形而上学的基礎づけ	n	Metaphysics	5
+hermeneutics	解釈学	n	Phenomenology	5
+holism	全体論	n	Philosophy core	4
+identity	同一性；アイデンティティ	n	Metaphysics	5
+idealism	観念論	n	Metaphysics	5
+implication	含意；帰結	n	Argumentation	5
+implicature	語用論的含意	n	Philosophy of language	4
+incommensurability	通約不可能性	n	Philosophy of science	4
+indeterminacy	不確定性；決定不能性	n	Philosophy core	4
+induction	帰納	n	Logic / science	5
+inductive	帰納的な	adj	Logic / science	5
+inference	推論	n	Epistemology	5
+inferential	推論的な	adj	Epistemology	5
+intentionality	志向性	n	Phenomenology	5
+internalism	内在主義	n	Epistemology	5
+intuition	直観	n	Philosophy core	5
+intuitionism	直観主義	n	Ethics / logic	3
+intersubjectivity	間主観性	n	Phenomenology	5
+justification	正当化	n	Epistemology	5
+knowledge	知識	n	Epistemology	5
+lifeworld	生活世界	n	Phenomenology	5
+logic	論理学；論理	n	Logic	5
+logical form	論理形式	n	Logic	4
+materialism	唯物論；物質主義	n	Metaphysics	5
+meaning	意味	n	Philosophy of language	5
+metaethics	メタ倫理学	n	Ethics	4
+metaphysics	形而上学	n	Metaphysics	5
+modality	様相	n	Metaphysics	5
+monism	一元論	n	Metaphysics	4
+moral realism	道徳的実在論	n	Ethics	4
+natural kind	自然種	n	Metaphysics / science	4
+naturalism	自然主義	n	Philosophy core	5
+necessary condition	必要条件	n	Logic	5
+necessity	必然性	n	Metaphysics	5
+nihilism	虚無主義；存在論的否定論	n	Philosophy core	4
+nominalism	唯名論	n	Metaphysics	4
+norm	規範	n	Ethics / social philosophy	5
+normative	規範的な	adj	Philosophy core	5
+normativity	規範性	n	Philosophy core	5
+objectivity	客観性	n	Epistemology	5
+ontology	存在論	n	Metaphysics	5
+particular	個物；個別的なもの	n	Metaphysics	4
+phenomenal	現象的な	adj	Philosophy of mind	4
+phenomenology	現象学	n	Phenomenology	5
+physicalism	物理主義	n	Philosophy of mind	5
+possible world	可能世界	n	Metaphysics	5
+pragmatism	プラグマティズム；実用主義	n	Philosophy core	4
+predicate	述語	n	Logic / language	5
+premise	前提	n	Argumentation	5
+presupposition	前提；前提含意	n	Philosophy of language	5
+principle	原理；原則	n	Philosophy core	5
+proposition	命題	n	Logic / language	5
+propositional attitude	命題的態度	n	Philosophy of mind	4
+qualia	クオリア；感覚質	n	Philosophy of mind	4
+rationalism	合理論	n	Epistemology	5
+rationality	合理性	n	Philosophy core	5
+realism	実在論	n	Metaphysics	5
+reason	理由；理性	n	Philosophy core	5
+reduction	還元	n	Metaphysics	4
+reductionism	還元主義	n	Metaphysics	5
+reliabilism	信頼性主義	n	Epistemology	5
+representation	表象；表現	n	Philosophy of mind	5
+representationalism	表象主義	n	Philosophy of mind	4
+skepticism	懐疑論	n	Epistemology	5
+soundness	健全性；前提が真で妥当な論証であること	n	Logic	5
+substance	実体	n	Metaphysics	4
+sufficient condition	十分条件	n	Logic	5
+supererogation	義務を超える行為	n	Ethics	3
+supervenience	付随性；スーパーヴィーニエンス	n	Metaphysics	5
+syllogism	三段論法	n	Logic	4
+teleology	目的論	n	Metaphysics / ethics	4
+testimony	証言	n	Epistemology	5
+thought experiment	思考実験	n	Philosophy core	5
+transcendental	超越論的な	adj	Phenomenology	5
+trope	個別的性質；トロープ	n	Metaphysics	3
+truth	真理	n	Epistemology	5
+truth condition	真理条件	n	Philosophy of language	4
+truthmaker	真理形成者	n	Metaphysics	4
+underdetermination	決定不全	n	Philosophy of science	5
+universal	普遍者	n	Metaphysics	4
+validity	妥当性；論理的妥当性	n	Logic	5
+value	価値	n	Ethics	5
+virtue	徳	n	Ethics	5
+warrant	認識的保証；正当化根拠	n	Epistemology	5
+weakness of will	意志の弱さ；アクラシア	n	Action / ethics	3
+world	世界	n	Metaphysics	4
+access internalism	アクセス内在主義	n	Epistemology	3
+acquaintance	面識；直接的認識	n	Epistemology	3
+anti-individualism	反個人主義	n	Philosophy of mind	3
+anti-foundationalism	反基礎づけ主義	n	Epistemology	3
+aporia	アポリア；行き詰まり	n	Philosophy core	3
+assertoric	断定的な	adj	Logic / language	3
+asymmetry	非対称性	n	Philosophy core	4
+atomism	原子論；要素還元的立場	n	Philosophy core	3
+categorical imperative	定言命法	n	Ethics	4
+category mistake	カテゴリー錯誤	n	Philosophy of language	4
+ceteris paribus	他の条件が等しければ	adv	Philosophy of science	4
+coextension	外延の一致	n	Logic / language	3
+commensurability	通約可能性	n	Philosophy of science	3
+compositionality	合成性	n	Philosophy of language	4
+conceivability	想像可能性；思考可能性	n	Metaphysics	4
+conceptual possibility	概念的可能性	n	Metaphysics	3
+consequentialism	帰結主義	n	Ethics	5
+constitutivism	構成主義；構成的説明の立場	n	Ethics / action	3
+contextualism	文脈主義	n	Epistemology	5
+conventionalism	規約主義	n	Philosophy core	3
+correspondence theory	対応説	n	Epistemology	4
+credal	信念度に関する	adj	Epistemology	3
+desire	欲求	n	Action / mind	5
+disjunctivism	選言主義	n	Epistemology / mind	4
+epistemic luck	認識的運	n	Epistemology	4
+epistemic risk	認識的リスク	n	Epistemology	4
+epistemic value	認識的価値	n	Epistemology	4
+evidentialism	証拠主義	n	Epistemology	4
+explanandum	被説明項；説明されるべき事柄	n	Philosophy of science	3
+explanans	説明項；説明する側の事柄	n	Philosophy of science	3
+expressivism	表出主義	n	Ethics / language	4
+functionalism	機能主義	n	Philosophy of mind	5
+Gettier case	ゲティア事例	n	Epistemology	5
+higher-order evidence	高階の証拠	n	Epistemology	4
+indispensability	不可欠性	n	Philosophy core	3
+instrumentalism	道具主義	n	Philosophy of science	4
+intensional	内包的な；内包に関する	adj	Logic / language	4
+intension	内包	n	Logic / language	4
+intentional stance	志向的立場	n	Philosophy of mind	3
+knowledge-first epistemology	知識第一認識論	n	Epistemology	4
+logical consequence	論理的帰結	n	Logic	5
+logical possibility	論理的可能性	n	Logic	4
+mental causation	心的因果	n	Philosophy of mind	4
+metaphysical necessity	形而上学的必然性	n	Metaphysics	4
+metaphysical possibility	形而上学的可能性	n	Metaphysics	4
+moral luck	道徳的運	n	Ethics	4
+moral responsibility	道徳的責任	n	Ethics	5
+non-reductive	非還元的な	adj	Metaphysics	4
+ontological commitment	存在論的コミットメント	n	Metaphysics	4
+phenomenal consciousness	現象的意識	n	Philosophy of mind	4
+practical reason	実践理性；実践的理由	n	Ethics / action	5
+primary quality	第一性質	n	Metaphysics	3
+qualitative identity	質的同一性	n	Metaphysics	3
+quantifier	量化子	n	Logic	4
+reflective equilibrium	反省的均衡	n	Ethics / methodology	5
+rule consequentialism	規則帰結主義	n	Ethics	3
+semantic externalism	意味論的外在主義	n	Philosophy of language	4
+sense datum	感覚与件	n	Epistemology	3
+speech act	発話行為	n	Philosophy of language	5
+state of affairs	事態	n	Metaphysics	4
+subjectivity	主観性	n	Phenomenology	5
+synthetic	総合的な	adj	Philosophy core	4
+theoretical virtue	理論的徳	n	Philosophy of science	4
+transworld identity	可能世界間同一性	n	Metaphysics	3
+virtue epistemology	徳認識論	n	Epistemology	5
+virtue ethics	徳倫理学	n	Ethics	5
+accessibility relation	到達可能性関係	n	Logic / attention	4
+attendabilia	注意可能項；注意を向けうる対象	n	Attention / epistemology	4
+attention	注意	n	Attention / epistemology	5
+attentional	注意に関する	adj	Attention / epistemology	4
+attentional pattern	注意パターン	n	Attention / epistemology	4
+salience	顕著性	n	Attention / epistemology	5
+salience structure	顕著性構造	n	Attention / epistemology	5
+static salience structure	静的顕著性構造	n	Attention / epistemology	4
+dynamic salience structure	動的顕著性構造	n	Attention / epistemology	4
+relevance	関連性	n	Phenomenology / epistemology	5
+relevance structure	関連性構造	n	Phenomenology / epistemology	5
+pragmatic relevance	実践的関連性	n	Phenomenology / epistemology	4
+thematic relevance	主題的関連性	n	Phenomenology / epistemology	4
+interpretive relevance	解釈上の関連性	n	Phenomenology / epistemology	3
+motivational relevance	動機づけ上の関連性	n	Phenomenology / epistemology	3
