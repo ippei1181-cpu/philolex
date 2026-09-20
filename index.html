@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050713">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PhiloLex // NC">
@@ -502,7 +505,7 @@ body::after{
 <div class="app">
   <div class="top">
     <div class="brand">PhiloLex // NIGHT CITY<span>CYBERPUNK ACADEMIC GRID</span></div>
-    <div class="pill" id="deckPill">Cyberdeckを起動中…</div>
+    <div><div class="pill" id="deckPill">Cyberdeckを起動中…</div><div style="font-size:9px;color:#66779a;text-align:right;margin-top:4px">BUILD 3.4</div></div>
   </div>
 
   <section class="panel dashboard" id="dashboard">
@@ -569,7 +572,7 @@ body::after{
     </div>
     <div class="sector-grid" id="sectorGrid"></div>
     <div class="quick-row">
-      <button class="quick-start" id="quickStart" disabled>▶ 10 WORD QUICK JACK-IN<span class="quick-sub">AUTO NET / 10 WORDS / MAX FX</span></button>
+      <button class="quick-start" id="quickStart" disabled>▶ QUICK JACK-IN<span class="quick-sub">AUTO NET / YOUR SETTINGS</span></button>
       <button class="configure-start" id="startBtn" disabled>JACK IN</button>
     </div>
     <div class="iphone-install" id="iosInstall">
@@ -613,7 +616,7 @@ body::after{
       <div class="stat"><b id="sumRemember">0%</b><small>LOCKED率</small></div>
     </div>
     <div class="btnrow">
-      <button class="primary" id="fiveMore">+5 DATA PACKETS</button>
+      <button class="primary" id="fiveMore">MORE DATA // 現在設定</button>
       <button class="secondary" id="backHome">RETURN TO GRID</button>
     </div>
   </section>
@@ -917,7 +920,8 @@ function chooseSession(n,modeOverride=null){
   else if(mode==="weak"){weak.slice(0,n).forEach(add)}
   else if(mode==="new"){fresh.slice(0,n).forEach(add)}
   else{
-    const newN=Math.max(1,Math.round(n*parseFloat($("newRatio").value||".2")));
+    const ratio=Math.max(0,Math.min(1,parseFloat($("newRatio").value||".2")));
+    const newN=Math.min(n,Math.max(0,Math.round(n*ratio)));
     const reviewN=n-newN;
     const review=[...new Map([...due,...weak].map(c=>[c.id,c])).values()].sort((a,b)=>weakness(b)-weakness(a));
     review.slice(0,reviewN).forEach(add);
@@ -935,7 +939,7 @@ function chooseSession(n,modeOverride=null){
 }
 function startSession(sizeOverride=null,modeOverride=null){
   saveSettings();
-  const n=+(sizeOverride||$("sessionSize").value||10);
+  const n=+(sizeOverride ?? $("sessionSize").value ?? 10);
   const q=chooseSession(n,modeOverride);
   if(!q.length){toast("NO DATA // この条件では出題できるカードがありません");return}
   session={queue:q,initial:q.length,index:0,answered:0,good:0,xp:0,coins:0,combo:0,fever:0,start:now(),seconds:+$("sprint").value*60,bossEvery:10,
@@ -971,7 +975,7 @@ function renderCard(){
   $("combo").textContent="LINK "+session.combo;
   $("fever").textContent=session.fever>0?"NEURAL OVERDRIVE ×2":"";
   $("fever").className=session.fever>0?"fever":"";
-  $("sessionXp").textContent="+"+session.xp+" NXP";
+  $("sessionXp").textContent=`+${session.xp} NXP · ${session.initial}語 · NEW ${Math.round(parseFloat($("newRatio").value||".2")*100)}%`;
   $("weakLabel").textContent=s.last==="again"?"覚えていない":s.last==="fuzzy"?"うろ覚え":s.seen===0?"新規":(session.route||"AUTO");
 }
 function rate(kind){
@@ -1068,6 +1072,8 @@ function soundFX(type){
 }
 function finishSession(){
   clearInterval(timerHandle);
+  const continueSize=+($("sessionSize").value||10);
+  $("fiveMore").textContent=`さらに${continueSize}語 // AUTO NET`;
   $("study").style.display="none";$("complete").style.display="block";
   meta.sessions=(meta.sessions||0)+1;saveState();
   const rate=session.answered?Math.round(session.good/session.answered*100):0;
@@ -1082,7 +1088,11 @@ function toast(msg){
 $("card").onclick=()=>{flipped=!flipped;$("card").classList.toggle("flip",flipped)};
 document.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>rate(b.dataset.rate));
 $("startBtn").onclick=()=>startSession();
-$("fiveMore").onclick=()=>{ $("complete").style.display="none"; startSession(5,"auto") };
+$("fiveMore").onclick=()=>{
+  $("complete").style.display="none";
+  // Continue AUTO NET using the current session-size setting and current new-word ratio.
+  startSession(null,"auto");
+};
 $("backHome").onclick=()=>{$("complete").style.display="none";$("dashboard").style.display="block";renderDashboard()};
 ["mode","sessionSize","sprint","stim","sound","category","section","newRatio","flipMode"].forEach(id=>$(id).onchange=()=>{saveSettings();document.body.classList.toggle("max-stim",$("stim").value==="max");renderSectorGrid()});
 document.addEventListener("keydown",e=>{
@@ -1107,14 +1117,12 @@ document.addEventListener("keydown",e=>{
 
 // iPhone/PWA helpers
 $("quickStart").onclick=()=>{
-  $("mode").value="auto";$("section").value="all";
-  $("sessionSize").value="10";
-  $("sprint").value="5";
-  $("stim").value="max";
-  $("sound").value="on";
-  $("newRatio").value=".2";
+  // Quick start keeps the user's chosen session size and new-word ratio.
+  // Only the route is forced to AUTO NET.
+  $("mode").value="auto";
+  $("section").value="all";
   saveSettings();
-  startSession(10,"auto");
+  startSession(null,"auto");
 };
 $("iosHome").onclick=()=>{
   if(confirm("このセッションを終了してRETURN TO GRID戻りますか？")){
@@ -1132,7 +1140,30 @@ $("iosHome").onclick=()=>{
   if(standalone) $("iosInstall").style.display="none";
   else if(!isIOS) $("iosInstall").innerHTML="<b>iPhone版PWA。</b> iPhoneのSafariで開き、共有 →「ホーム画面に追加」でインストールできます。";
   if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+    navigator.serviceWorker.register("./sw.js?v=3.4").then(reg=>{
+      // Safari can keep a Home Screen PWA on an old worker for a long time.
+      // Ask for an update every launch.
+      reg.update().catch(()=>{});
+
+      // If a newer worker is found, activate it immediately.
+      reg.addEventListener("updatefound", ()=>{
+        const worker=reg.installing;
+        if(!worker)return;
+        worker.addEventListener("statechange", ()=>{
+          if(worker.state==="installed" && navigator.serviceWorker.controller){
+            worker.postMessage?.({type:"SKIP_WAITING"});
+          }
+        });
+      });
+    }).catch(()=>{});
+
+    // Reload once when control passes to the new worker.
+    let refreshing=false;
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+      if(refreshing)return;
+      refreshing=true;
+      location.reload();
+    });
   }
 })();
 
@@ -1142,7 +1173,7 @@ $("iosHome").onclick=()=>{
     const res=await buildDeck();
     $("deckPill").textContent="CYBERDECK // "+deck.length+" WORDS";
     $("startBtn").disabled=false;$("startBtn").textContent="JACK IN";$("quickStart").disabled=false;
-    $("deckStatus").textContent=(res.cached?"1500語を端末キャッシュから読み込みました。":"1500語の初期デッキを構築し、端末に保存しました。")+" 「お任せ」は「覚えていない」「うろ覚え」・期限超過語を優先し、必要量だけ新規語を混ぜます。";
+    $("deckStatus").textContent=(res.cached?"1500語を端末キャッシュから読み込みました。":"1500語の初期デッキを構築し、端末に保存しました。")+" 「お任せ」は、設定した「1回の単語数」と「新規語の比率」をそのまま使用しつつ、「覚えていない」「うろ覚え」・期限超過語を優先します。";
     populateCategories();renderDashboard();
   }catch(err){
     // Offline fallback: the curated embedded philosophy deck still works.
