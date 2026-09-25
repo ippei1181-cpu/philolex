@@ -514,7 +514,7 @@ body::after{
 <div class="app">
   <div class="top">
     <div class="brand">PhiloLex // NIGHT CITY<span>CYBERPUNK ACADEMIC GRID</span></div>
-    <div><div class="pill" id="deckPill">Cyberdeckを起動中…</div><div style="font-size:9px;color:#66779a;text-align:right;margin-top:4px">BUILD 4.0</div></div>
+    <div><div class="pill" id="deckPill">Cyberdeckを起動中…</div><div style="font-size:9px;color:#66779a;text-align:right;margin-top:4px">BUILD 4.1</div></div>
   </div>
 
   <section class="panel dashboard" id="dashboard">
@@ -537,7 +537,7 @@ body::after{
         <label>DECK</label>
         <select id="deckSelect">
           <option value="philosophy">哲学・学術 1500語</option>
-          <option value="foundation">基礎アカデミック 2000語</option>
+          <option value="foundation">基礎アカデミック 2000語（易→難）</option>
         </select>
       </div>
       <div class="field">
@@ -657,11 +657,22 @@ const NGSL_URL = "https://raw.githubusercontent.com/koba-ninkigumi/ngsl/master/N
 const DECK_CONFIG={
  philosophy:{id:"philosophy",name:"哲学・学術 1500語",short:"PHILOSOPHY 1500",target:1500,sectionSize:150,
   sections:["01 // CORE GRID","02 // LOGIC DISTRICT","03 // CRITICAL ZONE","04 // ACADEMIC NODE A","05 // ACADEMIC NODE B","06 // THEORY SECTOR","07 // ANALYSIS SECTOR","08 // ADVANCED GRID A","09 // ADVANCED GRID B","10 // DEEP NET"]},
- foundation:{id:"foundation",name:"基礎アカデミック 2000語",short:"FOUNDATION 2000",target:2000,sectionSize:200,
-  sections:["01 // FOUNDATION BAND 1","02 // FOUNDATION BAND 2","03 // FOUNDATION BAND 3","04 // FOUNDATION BAND 4","05 // FOUNDATION BAND 5","06 // FOUNDATION BAND 6","07 // FOUNDATION BAND 7","08 // FOUNDATION BAND 8","09 // FOUNDATION BAND 9","10 // FOUNDATION BAND 10"]}
+ foundation:{id:"foundation",name:"基礎アカデミック 2000語（易→難）",short:"FOUNDATION 2000",target:2000,sectionSize:200,
+  sections:[
+    "01 // BRIDGE 1 · 2級上位",
+    "02 // BRIDGE 2 · 2級上位",
+    "03 // PRE-1 ENTRY 1 · 準1級導入",
+    "04 // PRE-1 ENTRY 2 · 準1級導入",
+    "05 // PRE-1 ENTRY 3 · 準1級導入",
+    "06 // PRE-1 CORE 1 · 準1級",
+    "07 // PRE-1 CORE 2 · 準1級",
+    "08 // PRE-1 CORE 3 · 準1級",
+    "09 // PRE-1 HIGH → G1 BRIDGE",
+    "10 // GRADE-1 BRIDGE · 1級導入"
+  ]}
 };
 
-const MULTI_DECK_KEY="philolex_multideck_v4";
+const MULTI_DECK_KEY="philolex_multideck_v4_1_difficulty";
 const LEGACY_DECK_KEY="philolex_cyberdeck_v3";
 // Keep these keys unchanged across app versions: normal GitHub updates preserve progress.
 const STATE_KEY="philolex_focus_state_v2";
@@ -800,53 +811,174 @@ function hydrateCard(c,i,deckId){
  const conf=DECK_CONFIG[deckId],pack=examplePack(c.word,c.pos,c.meaning);
  return {...c,id:i+1,deckId,section:Math.floor(i/conf.sectionSize)+1,example:c.example||pack.en,exampleJa:c.exampleJa||pack.ja};
 }
+function philosophyDifficulty(c){
+ const w=cleanDeckWord(c.word),cat=(c.category||"").toLowerCase();
+ let d=50;
+ if(/academic|argument|paper structure|advanced general/.test(cat))d-=18;
+ if(/philosophy core/.test(cat))d-=10;
+ if(/epistemology|ethics|social philosophy|feminist|critical/.test(cat))d+=2;
+ if(/logic|metaphysics|phenomenology|philosophy of language|philosophy of science/.test(cat))d+=8;
+ if((c.word||"").includes(" "))d+=3;
+ if(w.length>=10)d+=4;
+ if(/(ism|ity|ence|ance|tion|ality|ivity)$/.test(w))d+=3;
+ d-=(+c.priority||3)*2;
+ return d;
+}
 function buildPhilosophy(nawl,ngsl,legacy){
- if(Array.isArray(legacy)&&legacy.length===1500)return legacy.map((c,i)=>hydrateCard(c,i,"philosophy"));
  const map=new Map(),put=(c,prefer=false)=>{const k=cleanDeckWord(c.word);if(k&&(!map.has(k)||prefer))map.set(k,c)};
- EMBEDDED.forEach(c=>put({...c,priority:+c.priority||4},true));
- nawl.forEach(x=>put({...x,category:categoryForNawl(x.word,x.definition,x.pos),priority:4,example:generatedExample(x.word,x.pos,x.meaning),note:""}));
- const candidates=[];
- ngsl.forEach(x=>{
-  if(x.rank<650||x.rank>2300||map.has(cleanDeckWord(x.word)))return;
-  const score=academicUtility(x.word,x.pos,x.rank);
-  if(score>=3)candidates.push({...x,score,category:"General advanced reading",priority:3,example:generatedExample(x.word,x.pos,x.meaning),note:""});
- });
- candidates.sort((a,b)=>b.score-a.score||a.rank-b.rank);
- candidates.forEach(c=>{if(map.size<1500)put(c)});
- ngsl.forEach(x=>{
-  if(map.size>=1500||x.rank<900||x.rank>2800||map.has(cleanDeckWord(x.word)))return;
-  put({...x,category:"General advanced reading",priority:2,example:generatedExample(x.word,x.pos,x.meaning),note:""});
- });
- return [...map.values()].slice(0,1500).map((c,i)=>hydrateCard(c,i,"philosophy"));
+ if(Array.isArray(legacy)&&legacy.length===1500){
+   legacy.forEach(c=>put(c,true));
+ }else{
+   EMBEDDED.forEach(c=>put({...c,priority:+c.priority||4},true));
+   nawl.forEach(x=>put({...x,category:categoryForNawl(x.word,x.definition,x.pos),priority:4,
+     example:generatedExample(x.word,x.pos,x.meaning),note:""}));
+   const candidates=[];
+   ngsl.forEach(x=>{
+    if(x.rank<650||x.rank>2300||map.has(cleanDeckWord(x.word)))return;
+    const score=academicUtility(x.word,x.pos,x.rank);
+    if(score>=3)candidates.push({...x,score,category:"General advanced reading",priority:3,
+      example:generatedExample(x.word,x.pos,x.meaning),note:""});
+   });
+   candidates.sort((a,b)=>b.score-a.score||a.rank-b.rank);
+   candidates.forEach(c=>{if(map.size<1500)put(c)});
+   ngsl.forEach(x=>{
+    if(map.size>=1500||x.rank<900||x.rank>2800||map.has(cleanDeckWord(x.word)))return;
+    put({...x,category:"General advanced reading",priority:2,
+      example:generatedExample(x.word,x.pos,x.meaning),note:""});
+   });
+ }
+ const items=[...map.values()].slice(0,1500).map(c=>({...c,difficulty:philosophyDifficulty(c)}));
+ items.sort((a,b)=>
+   a.difficulty-b.difficulty ||
+   ((a.rank||9999)-(b.rank||9999)) ||
+   ((b.priority||3)-(a.priority||3))
+ );
+ return items.map((c,i)=>hydrateCard(c,i,"philosophy"));
 }
-function foundationScore(x,isAcademic=false){
- const rank=x.rank||1900,w=cleanDeckWord(x.word);
- let score=isAcademic?38:10;
- if(rank>=1050&&rank<=1600)score+=10;else if(rank<=2200)score+=14;else if(rank<=2800)score+=11;
- score+=Math.max(-4,Math.min(10,academicUtility(x.word,x.pos,rank)));
- if(/^(yeah|okay|mom|dad|guy|girl|boy|hello|sorry|thanks|birthday|weekend|football|baseball|beer|movie|kitchen|bedroom)$/i.test(w))score-=35;
- return score;
+function foundationEverydayPenalty(word){
+ const w=cleanDeckWord(word);
+ if(/^(yeah|okay|mom|dad|guy|girl|boy|hello|sorry|thanks|birthday|weekend|football|baseball|beer|movie|kitchen|bedroom|shirt|shoe|dog|cat|baby|restaurant|coffee|pizza|bus|hotel)$/i.test(w))return 25;
+ return 0;
 }
-function foundationCategory(x,isAcademic=false){
- if(isAcademic)return "Academic core";
- const r=x.rank||9999;
- if(r<1500)return "Upper-intermediate reading";
- if(r<2200)return "Advanced general reading";
- return "High-level reading";
+function fieldSpecificPenalty(x){
+ const s=((x.word||"")+" "+(x.definition||"")).toLowerCase();
+ return /(enzyme|molecule|chromosome|geolog|anatom|bacteria|chemical compound|surgical|protein|species|planetary|mineral|botan|zoolog)/.test(s)?10:0;
+}
+function academicFormBonus(word){
+ const w=cleanDeckWord(word);
+ let b=0;
+ if(/(tion|sion|ment|ance|ence|ity|ism|ive|al|ous|ary|ory|ate|ize|ise)$/.test(w))b+=2;
+ if(w.length>=7)b+=1;
+ if(w.length>=10)b+=1;
+ return b;
+}
+function foundationAcademicValue(x,isNawl=false){
+ const rank=x.rank||3000;
+ let v=academicUtility(x.word,x.pos,rank);
+ if(isNawl)v+=9;
+ v+=academicFormBonus(x.word);
+ v-=foundationEverydayPenalty(x.word);
+ v-=fieldSpecificPenalty(x);
+ return v;
+}
+function foundationDifficulty(x,isNawl=false){
+ const rank=x.rank||3050;
+ let d=rank;
+ if(isNawl)d+=55;
+ d+=Math.min(100,academicFormBonus(x.word)*12);
+ if((x.word||"").length>=10)d+=20;
+ return d;
+}
+function foundationCategoryByBand(band,isNawl=false){
+ if(band==="easy")return isNawl?"Academic bridge":"Upper-intermediate academic reading";
+ if(band==="mid")return isNawl?"Academic core":"Eiken Pre-1 / academic reading";
+ return isNawl?"Advanced academic core":"Pre-1 high / Grade-1 bridge";
+}
+function foundationCard(x,band,isNawl=false){
+ const value=foundationAcademicValue(x,isNawl);
+ const difficulty=foundationDifficulty(x,isNawl);
+ return {...x,
+  academicValue:value,difficulty,difficultyBand:band,
+  category:foundationCategoryByBand(band,isNawl),
+  priority:value>=18?5:value>=11?4:3,
+  example:generatedExample(x.word,x.pos,x.meaning),
+  note:band==="easy"
+    ?"基礎アカデミック帯。一般英文から論文読解へ橋渡しする語。"
+    :band==="mid"
+      ?"準1級相当を中心に、論文・評論で汎用性の高い語。"
+      :"準1級上位〜1級導入帯。より抽象的・低頻度な学術読解語。"
+ };
+}
+function pickFoundationBand(candidates,count,used){
+ const fresh=candidates.filter(c=>!used.has(cleanDeckWord(c.word)));
+ fresh.sort((a,b)=>
+   (b.academicValue-a.academicValue) ||
+   (a.difficulty-b.difficulty) ||
+   ((a.rank||9999)-(b.rank||9999))
+ );
+ const chosen=fresh.slice(0,count);
+ chosen.forEach(c=>used.add(cleanDeckWord(c.word)));
+ chosen.sort((a,b)=>
+   (a.difficulty-b.difficulty) ||
+   ((a.rank||9999)-(b.rank||9999)) ||
+   (b.academicValue-a.academicValue)
+ );
+ return chosen;
 }
 function buildFoundation(nawl,ngsl){
- const pool=new Map();
- const put=(x,isAcademic=false)=>{
-  const k=cleanDeckWord(x.word);if(!k)return;
-  const score=foundationScore(x,isAcademic);
-  const c={...x,score,category:foundationCategory(x,isAcademic),priority:score>=42?5:score>=34?4:3,
-   example:generatedExample(x.word,x.pos,x.meaning),
-   note:isAcademic?"論文・評論で汎用性の高い一般学術語。":"高度な英文読解で優先度の高い一般語。"};
-  const prev=pool.get(k);if(!prev||c.score>prev.score)pool.set(k,c);
- };
- ngsl.forEach(x=>{if(x.rank>=900&&x.rank<=2801)put(x,false)});
- nawl.forEach(x=>put(x,true));
- const items=[...pool.values()].sort((a,b)=>b.score-a.score||(a.rank||9999)-(b.rank||9999)||a.word.localeCompare(b.word)).slice(0,2000);
+ const ngslMap=new Map(ngsl.map(x=>[cleanDeckWord(x.word),x]));
+ const nawlKeys=new Set(nawl.map(x=>cleanDeckWord(x.word)));
+ const general=ngsl.map(x=>({...x,isNawl:nawlKeys.has(cleanDeckWord(x.word))}));
+
+ // 1–1000: 2級上位〜準1級導入
+ const easyPool=general
+   .filter(x=>x.rank>=700&&x.rank<=1800)
+   .map(x=>foundationCard(x,"easy",x.isNawl))
+   .filter(x=>x.academicValue>-8);
+
+ // 1001–1700: 準1級中心
+ const midPool=general
+   .filter(x=>x.rank>1800&&x.rank<=2500)
+   .map(x=>foundationCard(x,"mid",x.isNawl))
+   .filter(x=>x.academicValue>-7);
+
+ // 1701–2000: 準1級上位〜1級導入
+ const hardGeneral=general
+   .filter(x=>x.rank>2500&&x.rank<=3200)
+   .map(x=>foundationCard(x,"hard",x.isNawl))
+   .filter(x=>x.academicValue>-8);
+
+ const hardAcademicOnly=nawl
+   .filter(x=>!ngslMap.has(cleanDeckWord(x.word)))
+   .map(x=>foundationCard({...x,rank:3100},"hard",true))
+   .filter(x=>x.academicValue>=8);
+
+ const used=new Set();
+ let easy=pickFoundationBand(easyPool,1000,used);
+ let mid=pickFoundationBand(midPool,700,used);
+ let hard=pickFoundationBand([...hardGeneral,...hardAcademicOnly],300,used);
+
+ // Backfill if source-list sizes change in the future.
+ if(easy.length<1000){
+   const back=general.filter(x=>x.rank>=550&&x.rank<=1900).map(x=>foundationCard(x,"easy",x.isNawl));
+   easy=[...easy,...pickFoundationBand(back,1000-easy.length,used)];
+   easy.sort((a,b)=>a.difficulty-b.difficulty||(a.rank||9999)-(b.rank||9999));
+ }
+ if(mid.length<700){
+   const back=general.filter(x=>x.rank>1650&&x.rank<=2650).map(x=>foundationCard(x,"mid",x.isNawl));
+   mid=[...mid,...pickFoundationBand(back,700-mid.length,used)];
+   mid.sort((a,b)=>a.difficulty-b.difficulty||(a.rank||9999)-(b.rank||9999));
+ }
+ if(hard.length<300){
+   const back=[
+     ...general.filter(x=>x.rank>2350).map(x=>foundationCard(x,"hard",x.isNawl)),
+     ...hardAcademicOnly
+   ];
+   hard=[...hard,...pickFoundationBand(back,300-hard.length,used)];
+   hard.sort((a,b)=>a.difficulty-b.difficulty||(a.rank||9999)-(b.rank||9999));
+ }
+
+ const items=[...easy.slice(0,1000),...mid.slice(0,700),...hard.slice(0,300)];
  return items.map((c,i)=>hydrateCard(c,i,"foundation"));
 }
 function saveState(){
@@ -1043,7 +1175,7 @@ function renderCard(){
   const s=sFor(current), isBoss=((session.answered+1)%session.bossEvery===0)||weakness(current)>100;
   $("card").classList.remove("flip");
   $("front").innerHTML=`${isBoss?'<div class="boss">BLACK ICE ×3</div>':""}<span class="category">${DECK_CONFIG[current.deckId||activeDeckId()].sections[(current.section||1)-1]} · ${esc(current.category)}</span><div class="word">${esc(current.word)}</div><div class="pos">${esc(current.pos)}</div><div class="reveal-hint">タップ / Space で裏返す</div>`;
-  $("back").innerHTML=`${isBoss?'<div class="boss">BLACK ICE ×3</div>':""}<span class="category">${DECK_CONFIG[current.deckId||activeDeckId()].sections[(current.section||1)-1]} · ${esc(current.category)}</span><div class="word" style="font-size:31px">${esc(current.word)}</div><div class="meaning">${esc(current.meaning)}</div>${current.definition?`<div class="label">ENGLISH DEFINITION</div><div class="definition">${esc(current.definition)}</div>`:""}<div class="label">ACADEMIC EXAMPLE</div><div class="example">${esc(current.example)}</div><div class="label">日本語訳</div><div class="example-ja">${esc(current.exampleJa||examplePack(current.word,current.pos,current.meaning).ja)}</div>${current.note?`<div class="label">READING NOTE</div><div class="note">${esc(current.note)}</div>`:""}<div class="reveal-hint">MASTERY ${Math.round(s.mastery)} / 100 ・ LAPSES ${s.lapses}</div>`;
+  $("back").innerHTML=`${isBoss?'<div class="boss">BLACK ICE ×3</div>':""}<span class="category">${DECK_CONFIG[current.deckId||activeDeckId()].sections[(current.section||1)-1]} · ${esc(current.category)}</span><div class="word" style="font-size:31px">${esc(current.word)}</div><div class="meaning">${esc(current.meaning)}</div>${current.definition?`<div class="label">ENGLISH DEFINITION</div><div class="definition">${esc(current.definition)}</div>`:""}<div class="label">ACADEMIC EXAMPLE</div><div class="example">${esc(current.example)}</div><div class="label">日本語訳</div><div class="example-ja">${esc(current.exampleJa||examplePack(current.word,current.pos,current.meaning).ja)}</div>${current.note?`<div class="label">READING NOTE</div><div class="note">${esc(current.note)}</div>`:""}<div class="reveal-hint">MASTERY ${Math.round(s.mastery)} / 100 ・ LAPSES ${s.lapses}${current.deckId==="foundation"?` ・ DIFFICULTY ${Math.min(10,Math.max(1,Math.ceil((current.id||1)/200)))}/10`:""}</div>`;
   $("counter").textContent=(session.answered+1)+" / "+session.initial;
   $("sessionProgress").style.width=Math.min(100,session.answered/session.initial*100)+"%";
   $("combo").textContent="LINK "+session.combo;
@@ -1240,7 +1372,7 @@ $("iosHome").onclick=()=>{
   if(standalone) $("iosInstall").style.display="none";
   else if(!isIOS) $("iosInstall").innerHTML="<b>iPhone版PWA。</b> iPhoneのSafariで開き、共有 →「ホーム画面に追加」でインストールできます。";
   if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-    navigator.serviceWorker.register("./sw.js?v=4.0").then(reg=>{
+    navigator.serviceWorker.register("./sw.js?v=4.1").then(reg=>{
       // Safari can keep a Home Screen PWA on an old worker for a long time.
       // Ask for an update every launch.
       reg.update().catch(()=>{});
@@ -1275,8 +1407,8 @@ $("iosHome").onclick=()=>{
   switchDeck(false);
   $("startBtn").disabled=false;$("startBtn").textContent="JACK IN";$("quickStart").disabled=false;
   $("deckStatus").textContent=(res.cached
-    ?"2デッキ（1500語＋2000語）を端末キャッシュから読み込みました。"
-    :"哲学・学術1500語＋基礎アカデミック2000語を構築し、端末に保存しました。")
+    ?"2デッキ（1500語＋易→難の2000語）を端末キャッシュから読み込みました。"
+    :"哲学・学術1500語＋基礎アカデミック2000語（易→難）を構築し、端末に保存しました。")
     +" 通常のバージョン更新では進捗を保持します。SafariのWebサイトデータ削除前には進捗バックアップを使ってください。";
   populateCategories();renderDashboard();
  }catch(err){
