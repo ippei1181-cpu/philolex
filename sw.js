@@ -1,4 +1,4 @@
-const CACHE="philolex-cyberpunk-v4-1";
+const CACHE="philolex-cyberpunk-v4-4";
 const SHELL=["./manifest.webmanifest","./apple-touch-icon.png","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));

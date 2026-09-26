@@ -1,7 +1,7 @@
 {
   "name": "PhiloLex // Night City",
   "short_name": "PhiloLex NC",
-  "description": "Cyberpunk vocabulary trainer with difficulty-graded foundation and philosophy decks",
+  "description": "Cyberpunk academic-reading trainer with philosophy, foundation vocabulary, and 1500 reading phrases",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
